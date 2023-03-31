@@ -1,5 +1,5 @@
-import MockDate from 'mockdate'
 import { CalendarEntity } from './calendar.entity'
+import MockDate from 'mockdate'
 
 describe('CalendarEntity', () => {
   beforeAll(() => {
