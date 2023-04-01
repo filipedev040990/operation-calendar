@@ -4,7 +4,8 @@ import { CalendarEntity } from '@/domain/entities/calendar.entity'
 export class GetCalendarByNameUseCase {
   constructor (private readonly calendarRepository: GetCalendarByNameRepository) {}
   async execute (name: string): Promise<CalendarEntity> | null {
-    return await this.calendarRepository.getByName(name)
+    const calendar = await this.calendarRepository.getByName(name)
+    return calendar ?? null
   }
 }
 
@@ -37,5 +38,13 @@ describe('GetCalendarByNameUseCase', () => {
       name: 'Test',
       created_at: new Date('2023-01-01')
     })
+  })
+
+  test('should return null if CalendarRepository.getByName returns null', async () => {
+    const sut = new GetCalendarByNameUseCase(calendarRepository)
+
+    const calendar = await sut.execute('Test')
+
+    expect(calendar).toBeNull()
   })
 })
