@@ -4,3 +4,10 @@ export class MissingParamError extends Error {
     this.name = 'MissingParamError'
   }
 }
+
+export class ResourceConflictError extends Error {
+  constructor (message: string) {
+    super(message)
+    this.name = 'ResourceConflictError'
+  }
+}
