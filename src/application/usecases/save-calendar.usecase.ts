@@ -1,6 +1,5 @@
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
-import { SaveCalendarRepository } from '../interfaces/calendar-repository.interface'
-import { UUIDGenerator } from '../interfaces/uuid-generator.interface'
+import { SaveCalendarRepository, UUIDGenerator } from '@/application/interfaces'
 
 export class SaveCalendarUseCase {
   constructor (

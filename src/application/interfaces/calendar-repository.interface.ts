@@ -8,9 +8,5 @@ export namespace SaveCalendarRepository {
     name: string
     created_at: Date
   }
-  export type Output = {
-    id: string
-    name: string
-    created_at: Date
-  }
+  export type Output = Input
 }
