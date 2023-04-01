@@ -1,3 +1,5 @@
+import { CalendarEntity } from '@/domain/entities/calendar.entity'
+
 export interface SaveCalendarRepository {
   save (input: SaveCalendarRepository.Input): Promise<SaveCalendarRepository.Output>
 }
@@ -9,4 +11,8 @@ export namespace SaveCalendarRepository {
     created_at: Date
   }
   export type Output = Input
+}
+
+export interface GetCalendarByNameRepository {
+  getByName (name: string): Promise<CalendarEntity> | null
 }
