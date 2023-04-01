@@ -12,26 +12,24 @@ const uuidGenerator: jest.Mocked<UUIDGenerator> = {
 }
 
 describe('SaveCalendarUseCase', () => {
+  let sut: SaveCalendarUseCase
   beforeEach(() => {
     jest.clearAllMocks()
   })
   beforeAll(() => {
+    sut = new SaveCalendarUseCase(calendarRepository, uuidGenerator)
     MockDate.set(new Date())
   })
   afterAll(() => {
     MockDate.reset()
   })
   test('should call UUIDGenerator.uuid once', async () => {
-    const sut = new SaveCalendarUseCase(calendarRepository, uuidGenerator)
-
     await sut.execute({ name: 'Zé das Couves' })
 
     expect(uuidGenerator.uuid).toHaveBeenCalledTimes(1)
   })
 
   test('should call CalendarRepository.save once and with correct values', async () => {
-    const sut = new SaveCalendarUseCase(calendarRepository, uuidGenerator)
-
     await sut.execute({ name: 'Zé das Couves' })
 
     expect(calendarRepository.save).toHaveBeenCalledTimes(1)
