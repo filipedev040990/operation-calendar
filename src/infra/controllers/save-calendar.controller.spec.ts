@@ -1,10 +1,15 @@
 import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
+import { SaveCalendarUseCaseInterface } from '@/application/interfaces/save-calendar-usecase.interface'
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict } from '@/shared/helpers/http'
 import { HttpResponse } from '@/shared/types/http'
 
 export class SaveCalendarController {
-  constructor (private readonly getCalendarByNameUseCase: GetCalendarByNameUseCaseInterface) {}
+  constructor (
+    private readonly getCalendarByNameUseCase: GetCalendarByNameUseCaseInterface,
+    private readonly saveCalendarUseCase: SaveCalendarUseCaseInterface
+  ) {}
+
   async execute (name: string): Promise<HttpResponse> {
     if (!name) {
       return badRequest(new MissingParamError('name'))
@@ -14,6 +19,8 @@ export class SaveCalendarController {
     if (calendarExists) {
       return conflict(new ResourceConflictError('This name already exists'))
     }
+
+    await this.saveCalendarUseCase.execute({ name })
     return null
   }
 }
@@ -25,13 +32,18 @@ describe('SaveCalendarController', () => {
     execute: jest.fn()
   }
 
+  const saveCalendarUseCase: jest.Mocked<SaveCalendarUseCaseInterface> = {
+    execute: jest.fn()
+  }
+
   let sut: SaveCalendarController
 
   beforeAll(() => {
-    sut = new SaveCalendarController(getCalendarByNameUseCase)
+    sut = new SaveCalendarController(getCalendarByNameUseCase, saveCalendarUseCase)
   })
 
   beforeEach(() => {
+    jest.clearAllMocks()
     input = {
       body: {
         name: 'Calendar Test'
@@ -64,5 +76,12 @@ describe('SaveCalendarController', () => {
     const response = await sut.execute(input.body.name)
 
     expect(response).toEqual(conflict(new ResourceConflictError('This name already exists')))
+  })
+
+  test('should call SaveCalendarUseCase once and with correct values', async () => {
+    await sut.execute(input.body.name)
+
+    expect(saveCalendarUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(saveCalendarUseCase.execute).toHaveBeenCalledWith({ name: 'Calendar Test' })
   })
 })
