@@ -1,7 +1,7 @@
 import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
 import { SaveCalendarUseCaseInterface } from '@/application/interfaces/save-calendar-usecase.interface'
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
-import { badRequest, conflict } from '@/shared/helpers/http'
+import { badRequest, conflict, success } from '@/shared/helpers/http'
 import { HttpResponse } from '@/shared/types/http'
 
 export class SaveCalendarController {
@@ -20,8 +20,8 @@ export class SaveCalendarController {
       return conflict(new ResourceConflictError('This name already exists'))
     }
 
-    await this.saveCalendarUseCase.execute({ name })
-    return null
+    const newCalendar = await this.saveCalendarUseCase.execute({ name })
+    return success(201, newCalendar)
   }
 }
 
@@ -33,7 +33,11 @@ describe('SaveCalendarController', () => {
   }
 
   const saveCalendarUseCase: jest.Mocked<SaveCalendarUseCaseInterface> = {
-    execute: jest.fn()
+    execute: jest.fn().mockResolvedValue({
+      id: '321654987',
+      name: 'Calendar Test',
+      created_at: new Date('2023-01-04 09:00:00')
+    })
   }
 
   let sut: SaveCalendarController
@@ -83,5 +87,18 @@ describe('SaveCalendarController', () => {
 
     expect(saveCalendarUseCase.execute).toHaveBeenCalledTimes(1)
     expect(saveCalendarUseCase.execute).toHaveBeenCalledWith({ name: 'Calendar Test' })
+  })
+
+  test('should return an calendar', async () => {
+    const response = await sut.execute(input.body.name)
+
+    expect(response).toEqual({
+      statusCode: 201,
+      body: {
+        id: '321654987',
+        name: 'Calendar Test',
+        created_at: new Date('2023-01-04 09:00:00')
+      }
+    })
   })
 })
