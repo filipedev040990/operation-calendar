@@ -14,4 +14,10 @@ export namespace CalendarEntity {
     id: string
     name: string
   }
+
+  export type Output = {
+    id: string
+    name: string
+    created_at: Date
+  }
 }

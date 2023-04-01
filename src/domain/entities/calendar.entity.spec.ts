@@ -11,8 +11,7 @@ describe('CalendarEntity', () => {
   test('should create an instance of CalendarEntity correctly', () => {
     const calendar = new CalendarEntity({
       id: '123456',
-      name: 'Test',
-      created_at: new Date()
+      name: 'Test'
     })
 
     expect(calendar.id).toBe('123456')
