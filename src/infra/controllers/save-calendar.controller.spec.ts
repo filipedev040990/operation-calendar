@@ -1,7 +1,7 @@
 import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
 import { SaveCalendarUseCaseInterface } from '@/application/interfaces/save-calendar-usecase.interface'
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
-import { badRequest, conflict, success } from '@/shared/helpers/http'
+import { badRequest, conflict, serverError, success } from '@/shared/helpers/http'
 import { HttpResponse } from '@/shared/types/http'
 
 export class SaveCalendarController {
@@ -11,17 +11,21 @@ export class SaveCalendarController {
   ) {}
 
   async execute (name: string): Promise<HttpResponse> {
-    if (!name) {
-      return badRequest(new MissingParamError('name'))
-    }
+    try {
+      if (!name) {
+        return badRequest(new MissingParamError('name'))
+      }
 
-    const calendarExists = await this.getCalendarByNameUseCase.execute(name)
-    if (calendarExists) {
-      return conflict(new ResourceConflictError('This name already exists'))
-    }
+      const calendarExists = await this.getCalendarByNameUseCase.execute(name)
+      if (calendarExists) {
+        return conflict(new ResourceConflictError('This name already exists'))
+      }
 
-    const newCalendar = await this.saveCalendarUseCase.execute({ name })
-    return success(201, newCalendar)
+      const newCalendar = await this.saveCalendarUseCase.execute({ name })
+      return success(201, newCalendar)
+    } catch (error) {
+      return serverError(error)
+    }
   }
 }
 
@@ -100,5 +104,14 @@ describe('SaveCalendarController', () => {
         created_at: new Date('2023-01-04 09:00:00')
       }
     })
+  })
+
+  test('should throw if SaveCalendarUseCase throws', async () => {
+    saveCalendarUseCase.execute.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const response = await sut.execute(input.body.name)
+
+    expect(response).toEqual(serverError(new Error()))
   })
 })
