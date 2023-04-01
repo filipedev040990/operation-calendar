@@ -17,9 +17,15 @@ describe('SaveCalendarController', () => {
       name: 'Zé das Couves'
     }
   }
+
+  let sut: SaveCalendarController
+
+  beforeAll(() => {
+    sut = new SaveCalendarController()
+  })
+
   test('should return 400 if name is not provided', async () => {
     input.body.name = null
-    const sut = new SaveCalendarController()
 
     const response = await sut.execute(input.body.name)
 
