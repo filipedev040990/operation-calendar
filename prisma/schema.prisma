@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Calendar {
+  id         String   @id
+  name       String   @unique
+  created_at DateTime
+  Event      Event[]
+
+  @@map("calendars")
+}
+
+model Event {
+  id          String   @id
+  calendar    Calendar @relation(fields: [calendar_id], references: [id])
+  calendar_id String
+  name        String
+  category    String
+  start_date  DateTime
+  end_date    DateTime
+
+  @@map("events")
+}
