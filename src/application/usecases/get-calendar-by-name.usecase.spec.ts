@@ -1,5 +1,5 @@
 import { GetCalendarByNameRepository } from '@/application/interfaces'
-import { GetCalendarByNameUseCase } from './get-calendar-by-name'
+import { GetCalendarByNameUseCase } from './get-calendar-by-name.usecase'
 
 describe('GetCalendarByNameUseCase', () => {
   const calendarRepository: jest.Mocked<GetCalendarByNameRepository> = {
