@@ -5,6 +5,7 @@ export class CalendarEntity {
 
   constructor (input: CalendarEntity.Input) {
     Object.assign(this, input)
+    this.created_at = new Date()
   }
 }
 
@@ -12,6 +13,5 @@ export namespace CalendarEntity {
   export type Input = {
     id: string
     name: string
-    created_at: Date
   }
 }

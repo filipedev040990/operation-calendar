@@ -1,3 +1,4 @@
+import { CalendarEntity } from '@/domain/entities/calendar.entity'
 import { SaveCalendarRepository } from '../contracts/calendar-repository.interface'
 import { UUIDGenerator } from '../contracts/uuid-generator.interface'
 
@@ -8,6 +9,7 @@ export class SaveCalendarUseCase {
   ) {}
 
   async execute (input: { name: string }): Promise<void> {
-    this.uuidGenerator.uuid()
+    const calendar = new CalendarEntity({ id: this.uuidGenerator.uuid(), name: input.name })
+    await this.calendarRepository.save(calendar)
   }
 }
