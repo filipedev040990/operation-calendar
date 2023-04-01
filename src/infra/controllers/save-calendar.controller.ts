@@ -12,19 +12,25 @@ export class SaveCalendarController {
 
   async execute (name: string): Promise<HttpResponse> {
     try {
-      if (!name) {
-        return badRequest(new MissingParamError('name'))
+      const error = await this.validate(name)
+      if (error) {
+        return error
       }
-
-      const calendarExists = await this.getCalendarByNameUseCase.execute(name)
-      if (calendarExists) {
-        return conflict(new ResourceConflictError('This name already exists'))
-      }
-
       const newCalendar = await this.saveCalendarUseCase.execute({ name })
       return success(201, newCalendar)
     } catch (error) {
       return serverError(error)
+    }
+  }
+
+  private async validate (name: string): Promise<HttpResponse | void> {
+    if (!name) {
+      return badRequest(new MissingParamError('name'))
+    }
+
+    const calendarExists = await this.getCalendarByNameUseCase.execute(name)
+    if (calendarExists) {
+      return conflict(new ResourceConflictError('This name already exists'))
     }
   }
 }
