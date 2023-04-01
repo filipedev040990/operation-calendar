@@ -1,10 +1,11 @@
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
-import { SaveCalendarRepository, UUIDGenerator } from '@/application/interfaces'
+import { SaveCalendarRepositoryInterface, UUIDGeneratorInterface } from '@/application/interfaces'
+import { SaveCalendarUseCaseInterface } from '../interfaces/save-calendar-usecase.interface'
 
-export class SaveCalendarUseCase {
+export class SaveCalendarUseCase implements SaveCalendarUseCaseInterface {
   constructor (
-    private readonly calendarRepository: SaveCalendarRepository,
-    private readonly uuidGenerator: UUIDGenerator
+    private readonly calendarRepository: SaveCalendarRepositoryInterface,
+    private readonly uuidGenerator: UUIDGeneratorInterface
   ) {}
 
   async execute (input: { name: string }): Promise<CalendarEntity.Output> {

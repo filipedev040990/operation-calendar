@@ -1,7 +1,7 @@
-export interface UUIDGenerator {
-  uuid (): UUIDGenerator.Output
+export interface UUIDGeneratorInterface {
+  uuid (): UUIDGeneratorInterface.Output
 }
 
-export namespace UUIDGenerator {
+export namespace UUIDGeneratorInterface {
   export type Output = string
 }

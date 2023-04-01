@@ -1,10 +1,10 @@
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
 
-export interface SaveCalendarRepository {
-  save (input: SaveCalendarRepository.Input): Promise<SaveCalendarRepository.Output>
+export interface SaveCalendarRepositoryInterface {
+  save (input: SaveCalendarRepositoryInterface.Input): Promise<SaveCalendarRepositoryInterface.Output>
 }
 
-export namespace SaveCalendarRepository {
+export namespace SaveCalendarRepositoryInterface {
   export type Input = {
     id: string
     name: string
