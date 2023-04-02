@@ -1,6 +1,6 @@
 import { SaveCalendarUseCase } from './save-calendar.usecase'
 import { SaveCalendarRepositoryInterface } from '@/application/interfaces/calendar-repository.interface'
-import { UUIDGeneratorInterface } from '../interfaces/uuid-generator.interface'
+import { UUIDGeneratorInterface } from '@/application/interfaces/uuid-generator.interface'
 import MockDate from 'mockdate'
 
 const input = {
