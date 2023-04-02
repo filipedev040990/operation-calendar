@@ -27,9 +27,11 @@ export class ListCalendarByNameController implements ControllerInterface {
 }
 
 describe('ListCalendarByNameController', () => {
+  let sut: ListCalendarByNameController
+  beforeAll(() => {
+    sut = new ListCalendarByNameController(getCalendarByNameUseCase)
+  })
   test('should call GetCalendarByName once and with correct name', async () => {
-    const sut = new ListCalendarByNameController(getCalendarByNameUseCase)
-
     await sut.execute(input)
 
     expect(getCalendarByNameUseCase.execute).toHaveBeenCalledTimes(1)
