@@ -33,7 +33,7 @@ describe('ListCalendarByNameController', () => {
     sut = new ListCalendarByNameController(getCalendarByNameUseCase)
   })
 
-  test('should call GetCalendarByName once and with correct name', async () => {
+  test('should call GetCalendarByNameUseCase once and with correct name', async () => {
     await sut.execute(input)
 
     expect(getCalendarByNameUseCase.execute).toHaveBeenCalledTimes(1)
@@ -44,5 +44,13 @@ describe('ListCalendarByNameController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(success(200, fakeCalendar))
+  })
+
+  test('should return null if GetCalendarByNameUseCase returns null', async () => {
+    getCalendarByNameUseCase.execute.mockResolvedValueOnce(null)
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(success(200, null))
   })
 })
