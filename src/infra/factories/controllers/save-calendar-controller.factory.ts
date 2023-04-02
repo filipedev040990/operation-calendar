@@ -1,4 +1,4 @@
-import { SaveCalendarController } from '../../controllers/save-calendar.controller'
+import { SaveCalendarController } from '@/infra/controllers/calendars/save-calendar.controller'
 import { makeGetCalendarByNameUseCaseFactory } from '../usecases/get-calendar-by-name-usecase.factory'
 import { makeSaveCalendarUseCaseFactory } from '../usecases/save-calendar-usecase.factory'
 
