@@ -4,8 +4,8 @@ import { CalendarEntity } from '@/domain/entities/calendar.entity'
 export class ListAllCalendarsUseCase {
   constructor (private readonly calendarRepository: ListAllCalendarsRepository) {}
   async execute (): Promise<CalendarEntity [] | null> {
-    await this.calendarRepository.listAll()
-    return null
+    const calendars = await this.calendarRepository.listAll()
+    return calendars
   }
 }
 
@@ -33,5 +33,13 @@ describe('ListAllCalendarsUseCase', () => {
     await sut.execute()
 
     expect(calendarRepository.listAll).toHaveBeenCalledTimes(1)
+  })
+
+  test('should return all calendars', async () => {
+    const sut = new ListAllCalendarsUseCase(calendarRepository)
+
+    const calendars = await sut.execute()
+
+    expect(calendars).toEqual(fakeCalendars)
   })
 })
