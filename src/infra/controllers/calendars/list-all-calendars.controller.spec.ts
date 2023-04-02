@@ -1,6 +1,6 @@
 import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces/list-all-calendars-usecase.interface'
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
-import { success } from '@/shared/helpers/http'
+import { serverError, success } from '@/shared/helpers/http'
 import { HttpResponse } from '@/shared/types/http'
 
 const fakeCalendars: CalendarEntity [] = [
@@ -23,8 +23,12 @@ const listAllCalendarsUseCase: jest.Mocked<ListAllCalendarsUseCaseInterface> = {
 export class ListAllCalendarsController {
   constructor (private readonly listAllCalendarsUseCase: ListAllCalendarsUseCaseInterface) {}
   async execute (): Promise<HttpResponse> {
-    const calendars = await this.listAllCalendarsUseCase.execute()
-    return success(200, calendars)
+    try {
+      const calendars = await this.listAllCalendarsUseCase.execute()
+      return success(200, calendars)
+    } catch (error) {
+      return serverError(error)
+    }
   }
 }
 
@@ -43,5 +47,17 @@ describe('ListAllCalendarsController', () => {
     const calendars = await sut.execute()
 
     expect(calendars).toEqual(success(200, fakeCalendars))
+  })
+
+  test('should throw if listAllCalendarsUseCase.execute throws', async () => {
+    const sut = new ListAllCalendarsController(listAllCalendarsUseCase)
+
+    listAllCalendarsUseCase.execute.mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const response = await sut.execute()
+
+    expect(response).toEqual(serverError(new Error()))
   })
 })
