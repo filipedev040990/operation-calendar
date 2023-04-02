@@ -1,7 +1,6 @@
 import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
-import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { serverError, success } from '@/shared/helpers/http'
-import { HttpRequest, HttpResponse } from '@/shared/types/http'
+import { ListCalendarByNameController } from './list-calendar-by-name.controller'
 
 const input = {
   params: {
@@ -17,18 +16,6 @@ const fakeCalendar = {
 
 const getCalendarByNameUseCase: jest.Mocked<GetCalendarByNameUseCaseInterface> = {
   execute: jest.fn().mockResolvedValue(fakeCalendar)
-}
-
-export class ListCalendarByNameController implements ControllerInterface {
-  constructor (private readonly getCalendarByNameUseCase: GetCalendarByNameUseCaseInterface) {}
-  async execute (input: HttpRequest): Promise<HttpResponse> {
-    try {
-      const calendar = await this.getCalendarByNameUseCase.execute(input.params.name)
-      return success(200, calendar)
-    } catch (error) {
-      return serverError(error)
-    }
-  }
 }
 
 describe('ListCalendarByNameController', () => {
