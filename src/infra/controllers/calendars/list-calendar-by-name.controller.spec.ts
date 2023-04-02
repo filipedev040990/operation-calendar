@@ -1,6 +1,6 @@
 import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
-import { success } from '@/shared/helpers/http'
+import { serverError, success } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
 const input = {
@@ -22,8 +22,12 @@ const getCalendarByNameUseCase: jest.Mocked<GetCalendarByNameUseCaseInterface> =
 export class ListCalendarByNameController implements ControllerInterface {
   constructor (private readonly getCalendarByNameUseCase: GetCalendarByNameUseCaseInterface) {}
   async execute (input: HttpRequest): Promise<HttpResponse> {
-    const calendar = await this.getCalendarByNameUseCase.execute(input.params?.name)
-    return success(200, calendar)
+    try {
+      const calendar = await this.getCalendarByNameUseCase.execute(input.params.name)
+      return success(200, calendar)
+    } catch (error) {
+      return serverError(error)
+    }
   }
 }
 
@@ -52,5 +56,13 @@ describe('ListCalendarByNameController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(success(200, null))
+  })
+
+  test('should throw if GetCalendarByNameUseCase throws', async () => {
+    getCalendarByNameUseCase.execute.mockImplementationOnce(() => { throw new Error() })
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(serverError(new Error()))
   })
 })
