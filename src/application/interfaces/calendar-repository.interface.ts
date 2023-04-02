@@ -20,3 +20,19 @@ export interface GetCalendarByNameRepository {
 export interface ListAllCalendarsRepository {
   listAll (): Promise<CalendarEntity [] | null>
 }
+
+export interface UpdateCalendarRepositoryInterface {
+  update (input: UpdateCalendarRepositoryInterface.Input): Promise<UpdateCalendarRepositoryInterface.Output>
+}
+
+export namespace UpdateCalendarRepositoryInterface {
+  export type Input = {
+    id: string
+    name: string
+  }
+  export type Output = {
+    id: string
+    name: string
+    created_at: Date
+  }
+}
