@@ -27,17 +27,17 @@ const calendarRepository: jest.Mocked<ListAllCalendarsRepository> = {
 }
 
 describe('ListAllCalendarsUseCase', () => {
+  let sut: ListAllCalendarsUseCase
+  beforeAll(() => {
+    sut = new ListAllCalendarsUseCase(calendarRepository)
+  })
   test('should call CalendarRepository.listAll once', async () => {
-    const sut = new ListAllCalendarsUseCase(calendarRepository)
-
     await sut.execute()
 
     expect(calendarRepository.listAll).toHaveBeenCalledTimes(1)
   })
 
   test('should return all calendars', async () => {
-    const sut = new ListAllCalendarsUseCase(calendarRepository)
-
     const calendars = await sut.execute()
 
     expect(calendars).toEqual(fakeCalendars)
@@ -45,7 +45,6 @@ describe('ListAllCalendarsUseCase', () => {
 
   test('should return null if CalendarRepository.listAll returns null', async () => {
     calendarRepository.listAll.mockResolvedValueOnce(undefined)
-    const sut = new ListAllCalendarsUseCase(calendarRepository)
 
     const calendars = await sut.execute()
 
