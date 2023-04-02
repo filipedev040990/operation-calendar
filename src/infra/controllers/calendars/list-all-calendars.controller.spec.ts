@@ -33,25 +33,24 @@ export class ListAllCalendarsController {
 }
 
 describe('ListAllCalendarsController', () => {
-  test('should call ListAllCalendarsUseCase once', async () => {
-    const sut = new ListAllCalendarsController(listAllCalendarsUseCase)
+  let sut: ListAllCalendarsController
 
+  beforeAll(() => {
+    sut = new ListAllCalendarsController(listAllCalendarsUseCase)
+  })
+  test('should call ListAllCalendarsUseCase once', async () => {
     await sut.execute()
 
     expect(listAllCalendarsUseCase.execute).toHaveBeenCalledTimes(1)
   })
 
   test('should return all calendars', async () => {
-    const sut = new ListAllCalendarsController(listAllCalendarsUseCase)
-
     const calendars = await sut.execute()
 
     expect(calendars).toEqual(success(200, fakeCalendars))
   })
 
   test('should throw if listAllCalendarsUseCase.execute throws', async () => {
-    const sut = new ListAllCalendarsController(listAllCalendarsUseCase)
-
     listAllCalendarsUseCase.execute.mockImplementationOnce(() => {
       throw new Error()
     })
