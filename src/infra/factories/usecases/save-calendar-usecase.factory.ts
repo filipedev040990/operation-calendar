@@ -1,4 +1,5 @@
-import { SaveCalendarUseCase } from '@/application/usecases/save-calendar.usecase'
+
+import { SaveCalendarUseCase } from '@/application/usecases/calendars/save-calendar.usecase'
 import { UUIDGeneratorAdapter } from '@/infra/adapters/uuid-generator.adapter'
 import { CalendarRepository } from '@/infra/database/repositories/calendar.repository'
 
