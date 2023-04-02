@@ -1,5 +1,6 @@
 import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces/list-all-calendars-usecase.interface'
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
+import { success } from '@/shared/helpers/http'
 import { HttpResponse } from '@/shared/types/http'
 
 const fakeCalendars: CalendarEntity [] = [
@@ -22,8 +23,8 @@ const listAllCalendarsUseCase: jest.Mocked<ListAllCalendarsUseCaseInterface> = {
 export class ListAllCalendarsController {
   constructor (private readonly listAllCalendarsUseCase: ListAllCalendarsUseCaseInterface) {}
   async execute (): Promise<HttpResponse> {
-    await this.listAllCalendarsUseCase.execute()
-    return null
+    const calendars = await this.listAllCalendarsUseCase.execute()
+    return success(200, calendars)
   }
 }
 
@@ -34,5 +35,13 @@ describe('ListAllCalendarsController', () => {
     await sut.execute()
 
     expect(listAllCalendarsUseCase.execute).toHaveBeenCalledTimes(1)
+  })
+
+  test('should return all calendars', async () => {
+    const sut = new ListAllCalendarsController(listAllCalendarsUseCase)
+
+    const calendars = await sut.execute()
+
+    expect(calendars).toEqual(success(200, fakeCalendars))
   })
 })
