@@ -34,16 +34,24 @@ describe('SaveCalendarController', () => {
     }
   })
 
-  test('should return 400 if name is not provided', async () => {
+  test('should return 400 if name is null', async () => {
     input.body.name = null
 
-    const response = await sut.execute(input.body.name)
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new MissingParamError('name')))
+  })
+
+  test('should return 400 if name is not provided', async () => {
+    input.body = null
+
+    const response = await sut.execute(input)
 
     expect(response).toEqual(badRequest(new MissingParamError('name')))
   })
 
   test('should call GetCalendarByNameUseCase once and with correct name', async () => {
-    await sut.execute(input.body.name)
+    await sut.execute(input)
 
     expect(getCalendarByNameUseCase.execute).toHaveBeenCalledTimes(1)
     expect(getCalendarByNameUseCase.execute).toHaveBeenCalledWith('Calendar Test')
@@ -56,20 +64,20 @@ describe('SaveCalendarController', () => {
       created_at: new Date('2023-01-01')
     })
 
-    const response = await sut.execute(input.body.name)
+    const response = await sut.execute(input)
 
     expect(response).toEqual(conflict(new ResourceConflictError('This name already exists')))
   })
 
   test('should call SaveCalendarUseCase once and with correct values', async () => {
-    await sut.execute(input.body.name)
+    await sut.execute(input)
 
     expect(saveCalendarUseCase.execute).toHaveBeenCalledTimes(1)
     expect(saveCalendarUseCase.execute).toHaveBeenCalledWith({ name: 'Calendar Test' })
   })
 
   test('should return an calendar', async () => {
-    const response = await sut.execute(input.body.name)
+    const response = await sut.execute(input)
 
     expect(response).toEqual({
       statusCode: 201,
@@ -85,7 +93,7 @@ describe('SaveCalendarController', () => {
     saveCalendarUseCase.execute.mockImplementationOnce(() => {
       throw new Error()
     })
-    const response = await sut.execute(input.body.name)
+    const response = await sut.execute(input)
 
     expect(response).toEqual(serverError(new Error()))
   })

@@ -10,15 +10,16 @@ export class SaveCalendarController {
     private readonly saveCalendarUseCase: SaveCalendarUseCaseInterface
   ) {}
 
-  async execute (name: string): Promise<HttpResponse> {
+  async execute (input: SaveCalendarController.Input): Promise<HttpResponse> {
     try {
-      const error = await this.validate(name)
+      const error = await this.validate(input.body?.name)
       if (error) {
         return error
       }
-      const newCalendar = await this.saveCalendarUseCase.execute({ name })
+      const newCalendar = await this.saveCalendarUseCase.execute({ name: input.body.name })
       return success(201, newCalendar)
     } catch (error) {
+      console.log(error)
       return serverError(error)
     }
   }
@@ -31,6 +32,14 @@ export class SaveCalendarController {
     const calendarExists = await this.getCalendarByNameUseCase.execute(name)
     if (calendarExists) {
       return conflict(new ResourceConflictError('This name already exists'))
+    }
+  }
+}
+
+export namespace SaveCalendarController {
+  export type Input = {
+    body: {
+      name: string
     }
   }
 }

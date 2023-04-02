@@ -3,12 +3,12 @@ import { HttpResponse } from '@/shared/types/http'
 
 export const badRequest = (error: Error): HttpResponse => ({
   statusCode: 400,
-  body: error
+  body: error.message
 })
 
 export const conflict = (error: Error): HttpResponse => ({
   statusCode: 409,
-  body: error
+  body: error.message
 })
 
 export const success = (status: number, body: any): HttpResponse => ({

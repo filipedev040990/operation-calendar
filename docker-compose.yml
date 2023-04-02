@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+  operation_calendar:
+    container_name: 'operation_calendar'
+    image: node:16
+    restart: always
+    working_dir: /app
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=mysql://root:123456789@mysql:3306/operation_calendar
+    volumes:
+      - ./dist/:/app/dist/
+      - ./package.json:/app/package.json
+      - ./prisma:/app/prisma
+    command: bash -c "npm install --omit=dev --force && npx prisma migrate dev && npm run start"
+
+    depends_on:
+      - mysql
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'operation_calendar'
+      MYSQL_PASSWORD: '123456789'
+      MYSQL_ROOT_PASSWORD: '123456789'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+volumes:
+  my-db:
