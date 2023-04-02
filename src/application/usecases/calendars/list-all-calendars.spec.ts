@@ -5,7 +5,7 @@ export class ListAllCalendarsUseCase {
   constructor (private readonly calendarRepository: ListAllCalendarsRepository) {}
   async execute (): Promise<CalendarEntity [] | null> {
     const calendars = await this.calendarRepository.listAll()
-    return calendars
+    return calendars ?? null
   }
 }
 
@@ -41,5 +41,14 @@ describe('ListAllCalendarsUseCase', () => {
     const calendars = await sut.execute()
 
     expect(calendars).toEqual(fakeCalendars)
+  })
+
+  test('should return null if CalendarRepository.listAll returns null', async () => {
+    calendarRepository.listAll.mockResolvedValueOnce(undefined)
+    const sut = new ListAllCalendarsUseCase(calendarRepository)
+
+    const calendars = await sut.execute()
+
+    expect(calendars).toBeNull()
   })
 })
