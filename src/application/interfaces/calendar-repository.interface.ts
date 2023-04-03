@@ -36,6 +36,6 @@ export namespace UpdateCalendarRepositoryInterface {
     created_at: Date
   }
 }
-export interface GetCalendarByIdRepository {
+export interface GetCalendarByIdRepositoryInterface {
   getById (id: string): Promise<CalendarEntity> | null
 }

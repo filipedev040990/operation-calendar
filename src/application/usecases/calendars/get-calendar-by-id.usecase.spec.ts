@@ -1,7 +1,7 @@
-import { GetCalendarByIdRepository } from '@/application/interfaces'
+import { GetCalendarByIdRepositoryInterface } from '@/application/interfaces'
 import { GetCalendarByIdUseCase } from './get-calendar-by-id.usecase'
 
-const calendarRepository: jest.Mocked<GetCalendarByIdRepository> = {
+const calendarRepository: jest.Mocked<GetCalendarByIdRepositoryInterface> = {
   getById: jest.fn().mockResolvedValue({
     id: 'anyId',
     name: 'any Name',
