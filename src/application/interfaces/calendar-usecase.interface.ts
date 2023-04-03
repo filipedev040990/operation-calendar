@@ -1,7 +1,7 @@
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
 
 export interface GetCalendarByNameUseCaseInterface {
-  execute (name: string): Promise<CalendarEntity> | null
+  execute (name: string): Promise<CalendarEntity | null>
 }
 
 export interface ListAllCalendarsUseCaseInterface {
@@ -26,4 +26,8 @@ export namespace UpdateCalendarUseCaseInterface {
     name: string
     created_at: Date
   }
+}
+
+export interface GetCalendarByIdUseCaseInterface {
+  execute (id: string): Promise<CalendarEntity.Output | null>
 }

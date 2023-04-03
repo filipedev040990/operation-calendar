@@ -14,7 +14,7 @@ export namespace SaveCalendarRepositoryInterface {
 }
 
 export interface GetCalendarByNameRepository {
-  getByName (name: string): Promise<CalendarEntity> | null
+  getByName (name: string): Promise<CalendarEntity | null>
 }
 
 export interface ListAllCalendarsRepository {
@@ -35,4 +35,7 @@ export namespace UpdateCalendarRepositoryInterface {
     name: string
     created_at: Date
   }
+}
+export interface GetCalendarByIdRepository {
+  getById (id: string): Promise<CalendarEntity> | null
 }
