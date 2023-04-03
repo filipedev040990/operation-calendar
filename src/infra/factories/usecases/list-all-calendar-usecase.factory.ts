@@ -1,4 +1,4 @@
-import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces/list-all-calendars-usecase.interface'
+import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces'
 import { ListAllCalendarsUseCase } from '@/application/usecases/calendars/list-all-calendars.usecase'
 import { CalendarRepository } from '@/infra/database/repositories/calendar.repository'
 
