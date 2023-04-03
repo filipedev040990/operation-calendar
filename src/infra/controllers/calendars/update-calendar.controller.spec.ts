@@ -1,7 +1,7 @@
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict, serverError } from '@/shared/helpers/http'
 import { HttpRequest } from '@/shared/types/http'
-import { GetCalendarByNameUseCaseInterface, UpdateCalendarUseCaseInterface } from '@/application/interfaces'
+import { GetCalendarByIdUseCaseInterface, GetCalendarByNameUseCaseInterface, UpdateCalendarUseCaseInterface } from '@/application/interfaces'
 import { UpdateCalendarController } from './update-calendar.controller'
 
 const getCalendarByNameUseCase: jest.Mocked<GetCalendarByNameUseCaseInterface> = {
@@ -16,12 +16,20 @@ const updateCalendarUseCase: jest.Mocked<UpdateCalendarUseCaseInterface> = {
   })
 }
 
+const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
+  execute: jest.fn().mockResolvedValueOnce({
+    id: '123456789',
+    name: 'Any Name',
+    created_at: new Date('2023-01-01')
+  })
+}
+
 describe('UpdateCalendarController', () => {
   let sut: UpdateCalendarController
   let input: HttpRequest
 
   beforeAll(() => {
-    sut = new UpdateCalendarController(getCalendarByNameUseCase, updateCalendarUseCase)
+    sut = new UpdateCalendarController(getCalendarByNameUseCase, updateCalendarUseCase, getCalendarByIdUseCase)
   })
 
   beforeEach(() => {
@@ -48,6 +56,13 @@ describe('UpdateCalendarController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(badRequest(new MissingParamError('name')))
+  })
+
+  test('should call GetCalendarByIdUseCase once and with correct id', async () => {
+    await sut.execute(input)
+
+    expect(getCalendarByIdUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(getCalendarByIdUseCase.execute).toHaveBeenCalledWith('123456789')
   })
 
   test('should call GetCalendarByNameUseCase once and with correct name', async () => {
