@@ -1,4 +1,4 @@
-import { MissingParamError, ResourceConflictError } from '@/shared/errors'
+import { InvalidParamError, MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict, serverError } from '@/shared/helpers/http'
 import { HttpRequest } from '@/shared/types/http'
 import { GetCalendarByIdUseCaseInterface, GetCalendarByNameUseCaseInterface, UpdateCalendarUseCaseInterface } from '@/application/interfaces'
@@ -17,7 +17,7 @@ const updateCalendarUseCase: jest.Mocked<UpdateCalendarUseCaseInterface> = {
 }
 
 const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
-  execute: jest.fn().mockResolvedValueOnce({
+  execute: jest.fn().mockResolvedValue({
     id: '123456789',
     name: 'Any Name',
     created_at: new Date('2023-01-01')
@@ -63,6 +63,13 @@ describe('UpdateCalendarController', () => {
 
     expect(getCalendarByIdUseCase.execute).toHaveBeenCalledTimes(1)
     expect(getCalendarByIdUseCase.execute).toHaveBeenCalledWith('123456789')
+  })
+
+  test('should return 400 if calendar does not exists', async () => {
+    getCalendarByIdUseCase.execute.mockResolvedValueOnce(null)
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('id')))
   })
 
   test('should call GetCalendarByNameUseCase once and with correct name', async () => {

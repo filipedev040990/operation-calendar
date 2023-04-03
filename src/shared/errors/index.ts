@@ -19,3 +19,10 @@ export class ServerError extends Error {
     this.stack = error?.stack
   }
 }
+
+export class InvalidParamError extends Error {
+  constructor (paramName: string) {
+    super(`Invalid param: ${paramName}`)
+    this.name = 'InvalidParamError'
+  }
+}

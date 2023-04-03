@@ -1,5 +1,5 @@
 import { GetCalendarByIdUseCaseInterface, GetCalendarByNameUseCaseInterface, UpdateCalendarUseCaseInterface } from '@/application/interfaces'
-import { MissingParamError, ResourceConflictError } from '@/shared/errors'
+import { InvalidParamError, MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { success, serverError, badRequest, conflict } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
@@ -36,7 +36,10 @@ export class UpdateCalendarController implements ControllerInterface {
       return badRequest(new MissingParamError('id'))
     }
 
-    await this.getCalendarByIdUseCase.execute(input.params.id)
+    const calendarExists = await this.getCalendarByIdUseCase.execute(input.params.id)
+    if (!calendarExists) {
+      return badRequest(new InvalidParamError('id'))
+    }
 
     if (!input.body?.name) {
       return badRequest(new MissingParamError('name'))
