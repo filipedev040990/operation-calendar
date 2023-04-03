@@ -1,5 +1,5 @@
-import { MissingParamError } from '@/shared/errors'
-import { badRequest } from '@/shared/helpers/http'
+import { MissingParamError, ResourceConflictError } from '@/shared/errors'
+import { badRequest, conflict } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
@@ -24,7 +24,10 @@ export class UpdateCalendarController implements ControllerInterface {
       return badRequest(new MissingParamError('name'))
     }
 
-    await this.getCalendarByNameUseCase.execute(input.body.name)
+    const nameExists = await this.getCalendarByNameUseCase.execute(input.body.name)
+    if (nameExists && nameExists.id !== input.params.id) {
+      return conflict(new ResourceConflictError('This name already exists'))
+    }
   }
 }
 
@@ -70,5 +73,16 @@ describe('UpdateCalendarController', () => {
 
     expect(getCalendarByNameUseCase.execute).toHaveBeenCalledTimes(1)
     expect(getCalendarByNameUseCase.execute).toHaveBeenCalledWith('Updated Name')
+  })
+
+  test('should return 409 if name already exists', async () => {
+    getCalendarByNameUseCase.execute.mockResolvedValueOnce({
+      id: '9999999',
+      name: 'Updated Name',
+      created_at: new Date('2023-01-01')
+    })
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(conflict(new ResourceConflictError('This name already exists')))
   })
 })
