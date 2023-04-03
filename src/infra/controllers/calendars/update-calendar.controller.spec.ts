@@ -1,5 +1,5 @@
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
-import { badRequest, conflict } from '@/shared/helpers/http'
+import { badRequest, conflict, success } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
@@ -21,9 +21,10 @@ export class UpdateCalendarController implements ControllerInterface {
       id: input.params.id,
       name: input.body.name
     }
-    await this.updateCalendarUseCase.execute(updateInput)
 
-    return null
+    const updatedCalendar = await this.updateCalendarUseCase.execute(updateInput)
+
+    return success(200, updatedCalendar)
   }
 
   private async validateInput (input: HttpRequest): Promise<HttpResponse | null> {
@@ -47,7 +48,11 @@ const getCalendarByNameUseCase: jest.Mocked<GetCalendarByNameUseCaseInterface> =
 }
 
 const updateCalendarUseCase: jest.Mocked<UpdateCalendarUseCaseInterface> = {
-  execute: jest.fn()
+  execute: jest.fn().mockResolvedValue({
+    id: '123456789',
+    name: 'Updated Name',
+    created_at: new Date('2023-01-01')
+  })
 }
 
 describe('UpdateCalendarController', () => {
@@ -107,5 +112,18 @@ describe('UpdateCalendarController', () => {
 
     expect(updateCalendarUseCase.execute).toHaveBeenCalledTimes(1)
     expect(updateCalendarUseCase.execute).toHaveBeenCalledWith({ id: input.params.id, name: input.body.name })
+  })
+
+  test('should return a calendar updated', async () => {
+    const response = await sut.execute(input)
+
+    expect(response).toEqual({
+      statusCode: 200,
+      body: {
+        id: '123456789',
+        name: 'Updated Name',
+        created_at: new Date('2023-01-01')
+      }
+    })
   })
 })
