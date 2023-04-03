@@ -22,10 +22,18 @@ describe('GetCalendarByIdUseCase', () => {
   beforeAll(() => {
     sut = new GetCalendarByIdUseCase(calendarRepository)
   })
+
   test('should call CalendarRepository.getById once and with correct id', async () => {
     await sut.execute('anyId')
 
     expect(calendarRepository.getById).toHaveBeenCalledTimes(1)
     expect(calendarRepository.getById).toHaveBeenCalledWith('anyId')
+  })
+
+  test('should return null if CalendarRepository.getById returns null or undefined', async () => {
+    calendarRepository.getById.mockResolvedValueOnce(null)
+    const response = await sut.execute('anyId')
+
+    expect(response).toBeNull()
   })
 })
