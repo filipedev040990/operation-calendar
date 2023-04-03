@@ -1,4 +1,4 @@
-import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces/list-all-calendars-usecase.interface'
+import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces'
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
 import { serverError, success } from '@/shared/helpers/http'
 import { ListAllCalendarsController } from './list-all-calendars.controller'

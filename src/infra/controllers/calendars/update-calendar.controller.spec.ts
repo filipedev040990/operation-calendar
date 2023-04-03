@@ -1,8 +1,7 @@
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict, serverError } from '@/shared/helpers/http'
 import { HttpRequest } from '@/shared/types/http'
-import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
-import { UpdateCalendarUseCaseInterface } from '@/application/interfaces/update-calendar-usecase.interface'
+import { GetCalendarByNameUseCaseInterface, UpdateCalendarUseCaseInterface } from '@/application/interfaces'
 import { UpdateCalendarController } from './update-calendar.controller'
 
 const getCalendarByNameUseCase: jest.Mocked<GetCalendarByNameUseCaseInterface> = {

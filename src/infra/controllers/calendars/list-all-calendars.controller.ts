@@ -1,4 +1,4 @@
-import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces/list-all-calendars-usecase.interface'
+import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces'
 import { serverError, success } from '@/shared/helpers/http'
 import { HttpResponse } from '@/shared/types/http'
 

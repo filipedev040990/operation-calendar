@@ -1,5 +1,4 @@
-import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
-import { UpdateCalendarUseCaseInterface } from '@/application/interfaces/update-calendar-usecase.interface'
+import { GetCalendarByNameUseCaseInterface, UpdateCalendarUseCaseInterface } from '@/application/interfaces'
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { success, serverError, badRequest, conflict } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'

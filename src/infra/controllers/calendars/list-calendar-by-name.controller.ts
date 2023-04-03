@@ -1,4 +1,4 @@
-import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
+import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { success, serverError } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'

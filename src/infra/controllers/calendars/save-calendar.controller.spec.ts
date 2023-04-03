@@ -1,5 +1,4 @@
-import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
-import { SaveCalendarUseCaseInterface } from '@/application/interfaces/save-calendar-usecase.interface'
+import { GetCalendarByNameUseCaseInterface, SaveCalendarUseCaseInterface } from '@/application/interfaces'
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict, serverError } from '@/shared/helpers/http'
 import { SaveCalendarController } from './save-calendar.controller'
