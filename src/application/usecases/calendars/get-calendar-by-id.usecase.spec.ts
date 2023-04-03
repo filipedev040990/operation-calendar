@@ -4,8 +4,8 @@ import { CalendarEntity } from '@/domain/entities/calendar.entity'
 export class GetCalendarByIdUseCase implements GetCalendarByIdUseCaseInterface {
   constructor (private readonly calendarRepository: GetCalendarByIdRepository) {}
   async execute (id: string): Promise<CalendarEntity.Output> {
-    await this.calendarRepository.getById(id)
-    return null
+    const calendar = await this.calendarRepository.getById(id)
+    return calendar ?? null
   }
 }
 
@@ -35,5 +35,15 @@ describe('GetCalendarByIdUseCase', () => {
     const response = await sut.execute('anyId')
 
     expect(response).toBeNull()
+  })
+
+  test('should return an calendar if exists', async () => {
+    const response = await sut.execute('anyId')
+
+    expect(response).toEqual({
+      id: 'anyId',
+      name: 'any Name',
+      created_at: new Date('2023-01-01 19:56:10')
+    })
   })
 })
