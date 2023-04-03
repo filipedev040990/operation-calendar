@@ -8,6 +8,10 @@ export class UpdateCalendarController implements ControllerInterface {
     if (!input.params?.id) {
       return badRequest(new MissingParamError('id'))
     }
+
+    if (!input.body?.name) {
+      return badRequest(new MissingParamError('name'))
+    }
     return null
   }
 }
@@ -30,10 +34,18 @@ describe('UpdateCalendarController', () => {
       }
     }
   })
+
   test('should return 400 if calendar id is not provided', async () => {
     input.params.id = null
     const response = await sut.execute(input)
 
     expect(response).toEqual(badRequest(new MissingParamError('id')))
+  })
+
+  test('should return 400 if name is not provided', async () => {
+    input.body.name = null
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new MissingParamError('name')))
   })
 })
