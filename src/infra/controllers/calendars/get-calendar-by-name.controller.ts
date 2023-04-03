@@ -3,7 +3,7 @@ import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { success, serverError } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
-export class ListCalendarByNameController implements ControllerInterface {
+export class GetCalendarByNameController implements ControllerInterface {
   constructor (private readonly getCalendarByNameUseCase: GetCalendarByNameUseCaseInterface) {}
   async execute (input: HttpRequest): Promise<HttpResponse> {
     try {
