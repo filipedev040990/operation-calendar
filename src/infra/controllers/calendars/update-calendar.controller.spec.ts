@@ -1,5 +1,5 @@
 import { MissingParamError, ResourceConflictError } from '@/shared/errors'
-import { badRequest, conflict, success } from '@/shared/helpers/http'
+import { badRequest, conflict, serverError, success } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
@@ -12,19 +12,23 @@ export class UpdateCalendarController implements ControllerInterface {
   ) {}
 
   async execute (input: HttpRequest): Promise<HttpResponse> {
-    const error = await this.validateInput(input)
-    if (error) {
-      return error
+    try {
+      const error = await this.validateInput(input)
+      if (error) {
+        return error
+      }
+
+      const updateInput = {
+        id: input.params.id,
+        name: input.body.name
+      }
+
+      const updatedCalendar = await this.updateCalendarUseCase.execute(updateInput)
+
+      return success(200, updatedCalendar)
+    } catch (error) {
+      return serverError(error)
     }
-
-    const updateInput = {
-      id: input.params.id,
-      name: input.body.name
-    }
-
-    const updatedCalendar = await this.updateCalendarUseCase.execute(updateInput)
-
-    return success(200, updatedCalendar)
   }
 
   private async validateInput (input: HttpRequest): Promise<HttpResponse | null> {
@@ -125,5 +129,14 @@ describe('UpdateCalendarController', () => {
         created_at: new Date('2023-01-01')
       }
     })
+  })
+
+  test('should throw if UpdateCalendarUseCase throws', async () => {
+    updateCalendarUseCase.execute.mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(serverError(new Error()))
   })
 })

@@ -9,7 +9,7 @@
 
 
 ## Exceções
-1 - ⛔ Deve retornar **500** em caso de erro
+1 - ✅ Deve retornar **500** em caso de erro
 
 ## Objeto Calendar
 id string
