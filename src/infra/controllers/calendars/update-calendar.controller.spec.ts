@@ -2,9 +2,20 @@ import { MissingParamError } from '@/shared/errors'
 import { badRequest } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
+import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
 
 export class UpdateCalendarController implements ControllerInterface {
+  constructor (private readonly getCalendarByNameUseCase: GetCalendarByNameUseCaseInterface) {}
   async execute (input: HttpRequest): Promise<HttpResponse> {
+    const error = this.validateInput(input)
+    if (error) {
+      return await error
+    }
+
+    return null
+  }
+
+  private async validateInput (input: HttpRequest): Promise<HttpResponse | null> {
     if (!input.params?.id) {
       return badRequest(new MissingParamError('id'))
     }
@@ -12,8 +23,13 @@ export class UpdateCalendarController implements ControllerInterface {
     if (!input.body?.name) {
       return badRequest(new MissingParamError('name'))
     }
-    return null
+
+    await this.getCalendarByNameUseCase.execute(input.body.name)
   }
+}
+
+const getCalendarByNameUseCase: jest.Mocked<GetCalendarByNameUseCaseInterface> = {
+  execute: jest.fn()
 }
 
 describe('UpdateCalendarController', () => {
@@ -21,7 +37,7 @@ describe('UpdateCalendarController', () => {
   let input: HttpRequest
 
   beforeAll(() => {
-    sut = new UpdateCalendarController()
+    sut = new UpdateCalendarController(getCalendarByNameUseCase)
   })
 
   beforeEach(() => {
@@ -47,5 +63,12 @@ describe('UpdateCalendarController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(badRequest(new MissingParamError('name')))
+  })
+
+  test('should call GetCalendarByNameUseCase once and with correct name', async () => {
+    await sut.execute(input)
+
+    expect(getCalendarByNameUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(getCalendarByNameUseCase.execute).toHaveBeenCalledWith('Updated Name')
   })
 })
