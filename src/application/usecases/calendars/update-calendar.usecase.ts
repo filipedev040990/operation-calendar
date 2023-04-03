@@ -1,5 +1,4 @@
-import { UpdateCalendarRepositoryInterface } from '@/application/interfaces'
-import { UpdateCalendarUseCaseInterface } from '@/application/interfaces/update-calendar-usecase.interface'
+import { UpdateCalendarRepositoryInterface, UpdateCalendarUseCaseInterface } from '@/application/interfaces'
 
 export class UpdateCalendarUseCase implements UpdateCalendarUseCaseInterface {
   constructor (private readonly calendarRepository: UpdateCalendarRepositoryInterface) {}

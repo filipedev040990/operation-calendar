@@ -1,5 +1,4 @@
-import { ListAllCalendarsRepository } from '@/application/interfaces'
-import { ListAllCalendarsUseCaseInterface } from '@/application/interfaces/list-all-calendars-usecase.interface'
+import { ListAllCalendarsRepository, ListAllCalendarsUseCaseInterface } from '@/application/interfaces'
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
 
 export class ListAllCalendarsUseCase implements ListAllCalendarsUseCaseInterface {

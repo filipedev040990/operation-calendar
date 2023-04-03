@@ -1,5 +1,4 @@
-import { UpdateCalendarRepositoryInterface } from '@/application/interfaces'
-import { UpdateCalendarUseCaseInterface } from '@/application/interfaces/update-calendar-usecase.interface'
+import { UpdateCalendarRepositoryInterface, UpdateCalendarUseCaseInterface } from '@/application/interfaces'
 import { UpdateCalendarUseCase } from './update-calendar.usecase'
 import MockDate from 'mockdate'
 

@@ -1,6 +1,5 @@
-import { GetCalendarByNameRepository } from '@/application/interfaces'
+import { GetCalendarByNameRepository, GetCalendarByNameUseCaseInterface } from '@/application/interfaces'
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
-import { GetCalendarByNameUseCaseInterface } from '@/application/interfaces/get-calendar-by-name-usecase.interface'
 
 export class GetCalendarByNameUseCase implements GetCalendarByNameUseCaseInterface {
   constructor (private readonly calendarRepository: GetCalendarByNameRepository) {}
