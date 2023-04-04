@@ -12,9 +12,12 @@ export class DeleteCalendarUseCase implements DeleteCalendarUseCaseInterface {
 }
 
 describe('DeleteCalendarUseCase', () => {
-  test('should call CalendarRepository.delete once and with correct id', async () => {
-    const sut = new DeleteCalendarUseCase(calendarRepository)
+  let sut: DeleteCalendarUseCase
 
+  beforeAll(() => {
+    sut = new DeleteCalendarUseCase(calendarRepository)
+  })
+  test('should call CalendarRepository.delete once and with correct id', async () => {
     await sut.execute('anyId')
 
     expect(calendarRepository.delete).toHaveBeenCalledTimes(1)
@@ -24,7 +27,6 @@ describe('DeleteCalendarUseCase', () => {
     calendarRepository.delete.mockImplementationOnce(() => {
       throw new Error()
     })
-    const sut = new DeleteCalendarUseCase(calendarRepository)
 
     const promise = sut.execute('anyId')
 
