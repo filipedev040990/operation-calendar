@@ -1,14 +1,8 @@
-import { DeleteCalendarRepositoryInterface, DeleteCalendarUseCaseInterface } from '@/application/interfaces'
+import { DeleteCalendarRepositoryInterface } from '@/application/interfaces'
+import { DeleteCalendarUseCase } from './delete-calendar.usecase'
 
 const calendarRepository: jest.Mocked<DeleteCalendarRepositoryInterface> = {
   delete: jest.fn()
-}
-
-export class DeleteCalendarUseCase implements DeleteCalendarUseCaseInterface {
-  constructor (private readonly calendarRepository: DeleteCalendarRepositoryInterface) {}
-  async execute (id: string): Promise<void> {
-    await this.calendarRepository.delete(id)
-  }
 }
 
 describe('DeleteCalendarUseCase', () => {
