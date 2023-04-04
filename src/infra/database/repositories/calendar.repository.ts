@@ -1,8 +1,8 @@
-import { GetCalendarByIdRepositoryInterface, GetCalendarByNameRepository, ListAllCalendarsRepository, SaveCalendarRepositoryInterface, UpdateCalendarRepositoryInterface } from '@/application/interfaces'
+import { DeleteCalendarRepositoryInterface, GetCalendarByIdRepositoryInterface, GetCalendarByNameRepository, ListAllCalendarsRepository, SaveCalendarRepositoryInterface, UpdateCalendarRepositoryInterface } from '@/application/interfaces'
 import { prismaClient } from './prisma-client'
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
 
-export class CalendarRepository implements SaveCalendarRepositoryInterface, GetCalendarByNameRepository, ListAllCalendarsRepository, UpdateCalendarRepositoryInterface, GetCalendarByIdRepositoryInterface {
+export class CalendarRepository implements SaveCalendarRepositoryInterface, GetCalendarByNameRepository, ListAllCalendarsRepository, UpdateCalendarRepositoryInterface, GetCalendarByIdRepositoryInterface, DeleteCalendarRepositoryInterface {
   async save (input: SaveCalendarRepositoryInterface.Input): Promise<SaveCalendarRepositoryInterface.Input> {
     return await prismaClient.calendar.create({
       data: {
@@ -35,5 +35,9 @@ export class CalendarRepository implements SaveCalendarRepositoryInterface, GetC
 
   async getById (id: string): Promise<CalendarEntity> {
     return await prismaClient.calendar.findUnique({ where: { id } })
+  }
+
+  async delete (id: string): Promise<void> {
+    await prismaClient.calendar.delete({ where: { id } })
   }
 }
