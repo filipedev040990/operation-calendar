@@ -1,24 +1,7 @@
 import { SaveEventeRepositoryInterface } from '@/application/interfaces/event-repository.interface'
-import { SaveEvent, SaveEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
-import { EventEntity } from '@/domain/entities/event.entity'
+import { SaveEvent } from '@/application/interfaces/event-usecase.interface'
 import MockDate from 'mockdate'
-
-export class SaveEventUseCase implements SaveEventUseCaseInterface {
-  constructor (private readonly eventRepository: SaveEventeRepositoryInterface) {}
-  async execute (input: SaveEvent.Input): Promise<SaveEvent.Output> {
-    const event = new EventEntity({
-      id: input.id,
-      calendar_id: input.calendar_id,
-      name: input.name,
-      category: input.category,
-      start_date: input.start_date,
-      end_date: input.end_date ?? input.start_date
-    })
-
-    await this.eventRepository.save(event)
-    return null
-  }
-}
+import { SaveEventUseCase } from './save-event.usecase'
 
 export const eventRepository: jest.Mocked<SaveEventeRepositoryInterface> = {
   save: jest.fn()
