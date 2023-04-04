@@ -12,22 +12,27 @@ export class DeleteCalendarController implements ControllerInterface {
 
   async execute (input: HttpRequest): Promise<HttpResponse> {
     try {
-      const id = input.params?.id
-
-      if (!id) {
-        return badRequest(new MissingParamError('id'))
+      const error = await this.validateInput(input)
+      if (error) {
+        return error
       }
 
-      const calendar = await this.getCalendarByIdUseCase.execute(id)
-      if (!calendar) {
-        return badRequest(new InvalidParamError('id'))
-      }
-
-      await this.deleteCalendarUseCase.execute(id)
+      await this.deleteCalendarUseCase.execute(input.params.id)
 
       return noContent()
     } catch (error) {
       return serverError(error)
+    }
+  }
+
+  private async validateInput (input: HttpRequest): Promise<HttpResponse | void> {
+    if (!input.params?.id) {
+      return badRequest(new MissingParamError('id'))
+    }
+
+    const calendar = await this.getCalendarByIdUseCase.execute(input.params.id)
+    if (!calendar) {
+      return badRequest(new InvalidParamError('id'))
     }
   }
 }
