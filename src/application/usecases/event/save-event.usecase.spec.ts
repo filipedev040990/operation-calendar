@@ -24,25 +24,45 @@ export const eventRepository: jest.Mocked<SaveEventeRepositoryInterface> = {
   save: jest.fn()
 }
 
-const input: SaveEvent.Input = {
-  id: 'anyId',
-  calendar_id: 'anyCalendarId',
-  category: 'NORMAL',
-  name: 'anyName',
-  start_date: new Date('2023-01-01'),
-  end_date: null
-}
-
 describe('SaveEventUseCase', () => {
+  let input: SaveEvent.Input
   beforeAll(() => {
     MockDate.set(new Date('2023-01-01'))
   })
 
+  beforeEach(() => {
+    jest.clearAllMocks()
+    input = {
+      id: 'anyId',
+      calendar_id: 'anyCalendarId',
+      category: 'NORMAL',
+      name: 'anyName',
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-03')
+    }
+  })
   afterAll(() => {
     MockDate.reset()
   })
 
   test('should call EventRepository.save once and with correct values', async () => {
+    const sut = new SaveEventUseCase(eventRepository)
+
+    await sut.execute(input)
+
+    expect(eventRepository.save).toHaveBeenCalledTimes(1)
+    expect(eventRepository.save).toHaveBeenCalledWith({
+      id: 'anyId',
+      calendar_id: 'anyCalendarId',
+      category: 'NORMAL',
+      name: 'anyName',
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-03')
+    })
+  })
+
+  test('should set start_date to end_date if null', async () => {
+    input.end_date = null
     const sut = new SaveEventUseCase(eventRepository)
 
     await sut.execute(input)
