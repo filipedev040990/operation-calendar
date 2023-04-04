@@ -31,3 +31,7 @@ export namespace UpdateCalendarUseCaseInterface {
 export interface GetCalendarByIdUseCaseInterface {
   execute (id: string): Promise<CalendarEntity.Output | null>
 }
+
+export interface DeleteCalendarUseCaseInterface {
+  execute(id: string): Promise<void>
+}

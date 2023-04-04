@@ -39,3 +39,7 @@ export namespace UpdateCalendarRepositoryInterface {
 export interface GetCalendarByIdRepositoryInterface {
   getById (id: string): Promise<CalendarEntity> | null
 }
+
+export interface DeleteCalendarRepositoryInterface {
+  delete (id: string): Promise<void>
+}
