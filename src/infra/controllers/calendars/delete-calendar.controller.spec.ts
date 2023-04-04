@@ -1,11 +1,15 @@
-import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
+import { DeleteCalendarUseCaseInterface, GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
-import { badRequest } from '@/shared/helpers/http'
+import { badRequest, noContent } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
 export class DeleteCalendarController implements ControllerInterface {
-  constructor (private readonly getCalendarbyIdUseCase: GetCalendarByIdUseCaseInterface) {}
+  constructor (
+    private readonly getCalendarbyIdUseCase: GetCalendarByIdUseCaseInterface,
+    private readonly deleteCalendarUseCase: DeleteCalendarUseCaseInterface
+  ) {}
+
   async execute (input: HttpRequest): Promise<HttpResponse> {
     const id = input.params?.id
 
@@ -17,7 +21,10 @@ export class DeleteCalendarController implements ControllerInterface {
     if (!calendar) {
       return badRequest(new InvalidParamError('id'))
     }
-    return null
+
+    await this.deleteCalendarUseCase.execute(id)
+
+    return noContent()
   }
 }
 
@@ -29,11 +36,15 @@ const getCalendarbyIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
   })
 }
 
+const deleteCalendarUseCase: jest.Mocked<DeleteCalendarUseCaseInterface> = {
+  execute: jest.fn()
+}
+
 describe('DeleteCalendarController', () => {
   let sut: DeleteCalendarController
   let input: HttpRequest
   beforeAll(() => {
-    sut = new DeleteCalendarController(getCalendarbyIdUseCase)
+    sut = new DeleteCalendarController(getCalendarbyIdUseCase, deleteCalendarUseCase)
   })
 
   beforeEach(() => {
@@ -66,5 +77,18 @@ describe('DeleteCalendarController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(badRequest(new InvalidParamError('id')))
+  })
+
+  test('should call DeleteCalendrUseCase once and with correct id', async () => {
+    await sut.execute(input)
+
+    expect(deleteCalendarUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(deleteCalendarUseCase.execute).toHaveBeenCalledWith('anyId')
+  })
+
+  test('should return 204', async () => {
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(noContent())
   })
 })

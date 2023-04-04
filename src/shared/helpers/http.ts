@@ -20,3 +20,8 @@ export const serverError = (error: unknown): HttpResponse => ({
   statusCode: 500,
   body: new ServerError(error instanceof Error ? error : undefined)
 })
+
+export const noContent = (): HttpResponse => ({
+  statusCode: 204,
+  body: null
+})
