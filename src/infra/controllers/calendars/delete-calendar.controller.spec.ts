@@ -19,9 +19,12 @@ const input: HttpRequest = {
 }
 
 describe('DeleteCalendarController', () => {
+  let sut: DeleteCalendarController
+  beforeAll(() => {
+    sut = new DeleteCalendarController()
+  })
   test('should return 400 if id is not provided', async () => {
     input.params.id = null
-    const sut = new DeleteCalendarController()
 
     const response = await sut.execute(input)
 
