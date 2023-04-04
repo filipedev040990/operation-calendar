@@ -1,18 +1,22 @@
 import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
-import { MissingParamError } from '@/shared/errors'
+import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { badRequest } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
 export class DeleteCalendarController implements ControllerInterface {
   constructor (private readonly getCalendarbyIdUseCase: GetCalendarByIdUseCaseInterface) {}
   async execute (input: HttpRequest): Promise<HttpResponse> {
-    if (!input.params?.id) {
+    const id = input.params?.id
+
+    if (!id) {
       return badRequest(new MissingParamError('id'))
     }
 
-    const { id } = input.params
-    await this.getCalendarbyIdUseCase.execute(id)
+    const calendar = await this.getCalendarbyIdUseCase.execute(id)
+    if (!calendar) {
+      return badRequest(new InvalidParamError('id'))
+    }
     return null
   }
 }
@@ -54,5 +58,13 @@ describe('DeleteCalendarController', () => {
 
     expect(getCalendarbyIdUseCase.execute).toHaveBeenCalledTimes(1)
     expect(getCalendarbyIdUseCase.execute).toHaveBeenCalledWith('anyId')
+  })
+
+  test('should return 400 if id does not exists', async () => {
+    getCalendarbyIdUseCase.execute.mockResolvedValueOnce(null)
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('id')))
   })
 })
