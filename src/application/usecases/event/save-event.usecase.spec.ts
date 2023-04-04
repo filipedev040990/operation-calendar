@@ -26,7 +26,10 @@ export const eventRepository: jest.Mocked<SaveEventeRepositoryInterface> = {
 
 describe('SaveEventUseCase', () => {
   let input: SaveEvent.Input
+  let sut: SaveEventUseCase
+
   beforeAll(() => {
+    sut = new SaveEventUseCase(eventRepository)
     MockDate.set(new Date('2023-01-01'))
   })
 
@@ -46,8 +49,6 @@ describe('SaveEventUseCase', () => {
   })
 
   test('should call EventRepository.save once and with correct values', async () => {
-    const sut = new SaveEventUseCase(eventRepository)
-
     await sut.execute(input)
 
     expect(eventRepository.save).toHaveBeenCalledTimes(1)
@@ -63,7 +64,6 @@ describe('SaveEventUseCase', () => {
 
   test('should set start_date to end_date if null', async () => {
     input.end_date = null
-    const sut = new SaveEventUseCase(eventRepository)
 
     await sut.execute(input)
 
