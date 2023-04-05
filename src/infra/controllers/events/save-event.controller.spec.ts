@@ -14,7 +14,7 @@ const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
 }
 
 const getEventCalendarByName: jest.Mocked<GetEventByNameUseCaseInterface> = {
-  execute: jest.fn()
+  execute: jest.fn().mockResolvedValue(null)
 }
 
 export class SaveEventController implements ControllerInterface {
@@ -52,8 +52,12 @@ export class SaveEventController implements ControllerInterface {
     }
 
     const event = await this.getEventCalendarByName.execute(input.body.name)
-    if (!event) {
+    if (event) {
       return conflict(new ResourceConflictError('This event already exists'))
+    }
+
+    if (input.body?.end_date < input.body.start_date) {
+      return badRequest(new InvalidParamError('end_date'))
     }
   }
 }
@@ -122,9 +126,27 @@ describe('SaveEventController', () => {
     expect(getEventCalendarByName.execute).toHaveBeenCalledWith('AnyEventName')
   })
 
-  test('should return 400 if already event', async () => {
+  test('should return 409 if already event', async () => {
+    getEventCalendarByName.execute.mockResolvedValueOnce({
+      id: 'anyId',
+      calendar_id: 'anyCalendarId',
+      name: 'AnyEventName',
+      category: 'NORMAL',
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-01')
+    })
     const response = await sut.execute(input)
 
     expect(response).toEqual(conflict(new ResourceConflictError('This event already exists')))
+  })
+
+  test('should return 400 if end date is provided and it is less than start date', async () => {
+    const now = new Date()
+    const yesterday = now.setDate(now.getDate() - 1)
+    input.body.end_date = yesterday
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('end_date')))
   })
 })
