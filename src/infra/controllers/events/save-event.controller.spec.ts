@@ -13,7 +13,7 @@ export class SaveEventController implements ControllerInterface {
   }
 
   private validateInput (input: HttpRequest): HttpResponse | void {
-    const requiredFields = ['calendar_id']
+    const requiredFields = ['calendar_id', 'name', 'category', 'start_date']
 
     for (const field of requiredFields) {
       if (!input.body[field]) {
@@ -25,6 +25,11 @@ export class SaveEventController implements ControllerInterface {
 
 describe('SaveEventController', () => {
   let input: HttpRequest
+  let sut: SaveEventController
+
+  beforeAll(() => {
+    sut = new SaveEventController()
+  })
   beforeEach(() => {
     input = {
       body: {
@@ -35,12 +40,19 @@ describe('SaveEventController', () => {
       }
     }
   })
-  test('should return 400 if calendar id is not provided', async () => {
-    input.body.calendar_id = null
-    const sut = new SaveEventController()
+  test('should return 400 if any required field is not provided', async () => {
+    const requiredFields = ['calendar_id', 'name', 'category', 'start_date']
 
-    const response = await sut.execute(input)
+    for (const field of requiredFields) {
+      const fieldValue = field
 
-    expect(response).toEqual(badRequest(new MissingParamError('calendar_id')))
+      input.body[field] = null
+
+      const response = await sut.execute(input)
+
+      expect(response).toEqual(badRequest(new MissingParamError(field)))
+
+      input.body[field] = fieldValue
+    }
   })
 })
