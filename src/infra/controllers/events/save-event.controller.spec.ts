@@ -1,18 +1,24 @@
+import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { badRequest } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
+const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
+  execute: jest.fn()
+}
+
 export class SaveEventController implements ControllerInterface {
+  constructor (private readonly getCalendarByIdUseCase: GetCalendarByIdUseCaseInterface) {}
   async execute (input: HttpRequest): Promise<HttpResponse> {
-    const error = this.validateInput(input)
+    const error = await this.validateInput(input)
     if (error) {
       return error
     }
     return null
   }
 
-  private validateInput (input: HttpRequest): HttpResponse | void {
+  private async validateInput (input: HttpRequest): Promise<HttpResponse | void> {
     const requiredFields = ['calendar_id', 'name', 'category', 'start_date']
 
     for (const field of requiredFields) {
@@ -26,6 +32,8 @@ export class SaveEventController implements ControllerInterface {
     if (!validCategories.includes(input.body.category)) {
       return badRequest(new InvalidParamError('category'))
     }
+
+    await this.getCalendarByIdUseCase.execute(input.body.calendar_id)
   }
 }
 
@@ -34,7 +42,7 @@ describe('SaveEventController', () => {
   let sut: SaveEventController
 
   beforeAll(() => {
-    sut = new SaveEventController()
+    sut = new SaveEventController(getCalendarByIdUseCase)
   })
   beforeEach(() => {
     input = {
@@ -68,5 +76,12 @@ describe('SaveEventController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(badRequest(new InvalidParamError('category')))
+  })
+
+  test('should call GetCalendarByIdUseCase once and with correct calendar_id', async () => {
+    await sut.execute(input)
+
+    expect(getCalendarByIdUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(getCalendarByIdUseCase.execute).toHaveBeenCalledWith('AnyCalendarId')
   })
 })
