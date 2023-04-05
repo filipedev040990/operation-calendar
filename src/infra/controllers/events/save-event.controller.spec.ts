@@ -1,8 +1,8 @@
 import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
 import { GetEventByNameUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
-import { InvalidParamError, MissingParamError } from '@/shared/errors'
-import { badRequest } from '@/shared/helpers/http'
+import { InvalidParamError, MissingParamError, ResourceConflictError } from '@/shared/errors'
+import { badRequest, conflict } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
 const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
@@ -51,7 +51,10 @@ export class SaveEventController implements ControllerInterface {
       return badRequest(new InvalidParamError('calendar_id'))
     }
 
-    await this.getEventCalendarByName.execute(input.body.name)
+    const event = await this.getEventCalendarByName.execute(input.body.name)
+    if (!event) {
+      return conflict(new ResourceConflictError('This event already exists'))
+    }
   }
 }
 
@@ -117,5 +120,11 @@ describe('SaveEventController', () => {
 
     expect(getEventCalendarByName.execute).toHaveBeenCalledTimes(1)
     expect(getEventCalendarByName.execute).toHaveBeenCalledWith('AnyEventName')
+  })
+
+  test('should return 400 if already event', async () => {
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(conflict(new ResourceConflictError('This event already exists')))
   })
 })
