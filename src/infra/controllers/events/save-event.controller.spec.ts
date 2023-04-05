@@ -1,4 +1,5 @@
 import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
+import { GetEventByNameUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { badRequest } from '@/shared/helpers/http'
@@ -12,8 +13,16 @@ const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
   })
 }
 
+const getEventCalendarByName: jest.Mocked<GetEventByNameUseCaseInterface> = {
+  execute: jest.fn()
+}
+
 export class SaveEventController implements ControllerInterface {
-  constructor (private readonly getCalendarByIdUseCase: GetCalendarByIdUseCaseInterface) {}
+  constructor (
+    private readonly getCalendarByIdUseCase: GetCalendarByIdUseCaseInterface,
+    private readonly getEventCalendarByName: GetEventByNameUseCaseInterface
+  ) {}
+
   async execute (input: HttpRequest): Promise<HttpResponse> {
     const error = await this.validateInput(input)
     if (error) {
@@ -41,6 +50,8 @@ export class SaveEventController implements ControllerInterface {
     if (!calendar) {
       return badRequest(new InvalidParamError('calendar_id'))
     }
+
+    await this.getEventCalendarByName.execute(input.body.name)
   }
 }
 
@@ -49,7 +60,7 @@ describe('SaveEventController', () => {
   let sut: SaveEventController
 
   beforeAll(() => {
-    sut = new SaveEventController(getCalendarByIdUseCase)
+    sut = new SaveEventController(getCalendarByIdUseCase, getEventCalendarByName)
   })
   beforeEach(() => {
     jest.clearAllMocks()
@@ -99,5 +110,12 @@ describe('SaveEventController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(badRequest(new InvalidParamError('calendar_id')))
+  })
+
+  test('should call GetEventCalendarByName once and with correct name', async () => {
+    await sut.execute(input)
+
+    expect(getEventCalendarByName.execute).toHaveBeenCalledTimes(1)
+    expect(getEventCalendarByName.execute).toHaveBeenCalledWith('AnyEventName')
   })
 })
