@@ -7,7 +7,7 @@
 3 - ✅ Deve retornar **400** se a categoria não for fornecida
 4 - ✅ Deve retornar **400** se a categoria fornecida for inválida
 5 - ✅ Deve retornar **400** se a data inicial não for fornecida
-6 - ⛔ Deve retornar **400** se o id do calendário não existir
+6 - ✅ Deve retornar **400** se o id do calendário não existir
 7 - ⛔ Deve retornar **400** se a data inicial for menor que a data final
 8 - ⛔ Deve retornar **400** se já existir um evento com o nome fornecido
 9 - ⛔ Deve retornar **200** com os dados do evento criado

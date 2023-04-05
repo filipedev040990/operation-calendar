@@ -5,7 +5,11 @@ import { badRequest } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
 const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
-  execute: jest.fn()
+  execute: jest.fn().mockResolvedValue({
+    id: 'anyId',
+    name: 'any Name',
+    created_at: new Date('2023-01-01 19:56:10')
+  })
 }
 
 export class SaveEventController implements ControllerInterface {
@@ -33,7 +37,10 @@ export class SaveEventController implements ControllerInterface {
       return badRequest(new InvalidParamError('category'))
     }
 
-    await this.getCalendarByIdUseCase.execute(input.body.calendar_id)
+    const calendar = await this.getCalendarByIdUseCase.execute(input.body.calendar_id)
+    if (!calendar) {
+      return badRequest(new InvalidParamError('calendar_id'))
+    }
   }
 }
 
@@ -45,6 +52,7 @@ describe('SaveEventController', () => {
     sut = new SaveEventController(getCalendarByIdUseCase)
   })
   beforeEach(() => {
+    jest.clearAllMocks()
     input = {
       body: {
         calendar_id: 'AnyCalendarId',
@@ -83,5 +91,13 @@ describe('SaveEventController', () => {
 
     expect(getCalendarByIdUseCase.execute).toHaveBeenCalledTimes(1)
     expect(getCalendarByIdUseCase.execute).toHaveBeenCalledWith('AnyCalendarId')
+  })
+
+  test('should return 400 if GetCalendarByIdUseCase returns null', async () => {
+    getCalendarByIdUseCase.execute.mockResolvedValueOnce(null)
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('calendar_id')))
   })
 })
