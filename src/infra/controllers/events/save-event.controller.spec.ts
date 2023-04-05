@@ -1,5 +1,5 @@
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
-import { MissingParamError } from '@/shared/errors'
+import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { badRequest } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
@@ -20,6 +20,12 @@ export class SaveEventController implements ControllerInterface {
         return badRequest(new MissingParamError(field))
       }
     }
+
+    const validCategories = ['NORMAL', 'WARNING', 'CRITICAL']
+
+    if (!validCategories.includes(input.body.category)) {
+      return badRequest(new InvalidParamError('category'))
+    }
   }
 }
 
@@ -33,9 +39,9 @@ describe('SaveEventController', () => {
   beforeEach(() => {
     input = {
       body: {
-        calendar_id: '',
-        name: '',
-        category: '',
+        calendar_id: 'AnyCalendarId',
+        name: 'AnyEventName',
+        category: 'NORMAL',
         start_date: new Date()
       }
     }
@@ -54,5 +60,13 @@ describe('SaveEventController', () => {
 
       input.body[field] = fieldValue
     }
+  })
+
+  test('should return 400 if invalid category is provided', async () => {
+    input.body.category = 'InvalidCategory'
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('category')))
   })
 })
