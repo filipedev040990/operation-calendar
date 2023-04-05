@@ -1,4 +1,5 @@
 import { CalendarEntity } from '@/domain/entities/calendar.entity'
+import { EventEntity } from '@/domain/entities/event.entity'
 
 export interface SaveEventUseCaseInterface {
   execute(input: SaveEvent.Input): Promise<SaveEvent.Output>
@@ -24,4 +25,8 @@ export namespace SaveEvent {
     start_date: Date
     end_date: Date
   }
+}
+
+export interface GetEventByNameUseCaseInterface {
+  execute(name: string): Promise<EventEntity | null>
 }
