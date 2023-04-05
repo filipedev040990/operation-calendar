@@ -1,6 +1,5 @@
 import { GetEventByNameRepositoryInterface } from '@/application/interfaces/event-repository.interface'
-import { GetEventByNameUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
-import { EventEntity } from '@/domain/entities/event.entity'
+import { GetEventByNameUseCase } from './get-event-by-name.usecase'
 
 const enventRepository: jest.Mocked<GetEventByNameRepositoryInterface> = {
   getByName: jest.fn().mockResolvedValue({
@@ -11,14 +10,6 @@ const enventRepository: jest.Mocked<GetEventByNameRepositoryInterface> = {
     start_date: new Date('2023-01-01 13:00:00'),
     end_date: new Date('2023-01-01 13:00:00')
   })
-}
-
-export class GetEventByNameUseCase implements GetEventByNameUseCaseInterface {
-  constructor (private readonly enventRepository: GetEventByNameRepositoryInterface) {}
-  async execute (name: string): Promise<EventEntity> {
-    const calendar = await this.enventRepository.getByName(name)
-    return calendar ?? null
-  }
 }
 
 describe('GetEventByNameUseCase', () => {
