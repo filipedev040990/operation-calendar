@@ -22,9 +22,11 @@ export class GetEventByNameUseCase implements GetEventByNameUseCaseInterface {
 }
 
 describe('GetEventByNameUseCase', () => {
+  let sut: GetEventByNameUseCase
+  beforeAll(() => {
+    sut = new GetEventByNameUseCase(enventRepository)
+  })
   test('should call EventRepository once and with correct name', async () => {
-    const sut = new GetEventByNameUseCase(enventRepository)
-
     await sut.execute('Any Event')
 
     expect(enventRepository.getByName).toHaveBeenCalledTimes(1)
@@ -32,8 +34,6 @@ describe('GetEventByNameUseCase', () => {
   })
 
   test('should return a calendar if exists', async () => {
-    const sut = new GetEventByNameUseCase(enventRepository)
-
     const response = await sut.execute('Any Event')
 
     expect(response).toEqual({
