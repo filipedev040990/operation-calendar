@@ -45,4 +45,12 @@ describe('GetEventByNameUseCase', () => {
       end_date: new Date('2023-01-01 13:00:00')
     })
   })
+
+  test('should return null if calendar does not exists', async () => {
+    enventRepository.getByName.mockResolvedValueOnce(null)
+
+    const response = await sut.execute('Invalid Name')
+
+    expect(response).toBeNull()
+  })
 })
