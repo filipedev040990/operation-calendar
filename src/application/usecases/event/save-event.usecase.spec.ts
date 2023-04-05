@@ -4,7 +4,18 @@ import MockDate from 'mockdate'
 import { SaveEventUseCase } from './save-event.usecase'
 
 export const eventRepository: jest.Mocked<SaveEventeRepositoryInterface> = {
-  save: jest.fn()
+  save: jest.fn().mockResolvedValue({
+    id: 'anyId',
+    calendar: {
+      id: 'anyCalendarId',
+      name: 'AnyCalendar',
+      created_at: new Date('2023-01-01')
+    },
+    category: 'NORMAL',
+    name: 'anyName',
+    start_date: new Date('2023-01-01'),
+    end_date: new Date('2023-01-03')
+  })
 }
 
 describe('SaveEventUseCase', () => {
@@ -58,6 +69,23 @@ describe('SaveEventUseCase', () => {
       name: 'anyName',
       start_date: new Date('2023-01-01'),
       end_date: new Date('2023-01-01')
+    })
+  })
+
+  test('should return a new Event', async () => {
+    const response = await sut.execute(input)
+
+    expect(response).toEqual({
+      id: 'anyId',
+      calendar: {
+        id: 'anyCalendarId',
+        name: 'AnyCalendar',
+        created_at: new Date('2023-01-01')
+      },
+      category: 'NORMAL',
+      name: 'anyName',
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-03')
     })
   })
 })

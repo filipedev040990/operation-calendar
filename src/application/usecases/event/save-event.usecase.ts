@@ -14,7 +14,6 @@ export class SaveEventUseCase implements SaveEventUseCaseInterface {
       end_date: input.end_date ?? input.start_date
     })
 
-    await this.eventRepository.save(event)
-    return null
+    return await this.eventRepository.save(event)
   }
 }
