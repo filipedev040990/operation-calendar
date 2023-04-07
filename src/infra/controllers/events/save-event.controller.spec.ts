@@ -1,9 +1,10 @@
 import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
-import { GetEventByNameUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
+import { GetEventByNameUseCaseInterface, SaveEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { InvalidParamError, MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict } from '@/shared/helpers/http'
 import { HttpRequest } from '@/shared/types/http'
 import { SaveEventController } from './save-event.controller'
+import MockDate from 'mockdate'
 
 const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
   execute: jest.fn().mockResolvedValue({
@@ -17,12 +18,17 @@ const getEventCalendarByName: jest.Mocked<GetEventByNameUseCaseInterface> = {
   execute: jest.fn().mockResolvedValue(null)
 }
 
+const saveEventUseCase: jest.Mocked<SaveEventUseCaseInterface> = {
+  execute: jest.fn()
+}
+
 describe('SaveEventController', () => {
   let input: HttpRequest
   let sut: SaveEventController
 
   beforeAll(() => {
-    sut = new SaveEventController(getCalendarByIdUseCase, getEventCalendarByName)
+    MockDate.set(new Date())
+    sut = new SaveEventController(getCalendarByIdUseCase, getEventCalendarByName, saveEventUseCase)
   })
   beforeEach(() => {
     jest.clearAllMocks()
@@ -34,6 +40,9 @@ describe('SaveEventController', () => {
         start_date: new Date()
       }
     }
+  })
+  afterAll(() => {
+    MockDate.reset()
   })
   test('should return 400 if any required field is not provided', async () => {
     const requiredFields = ['calendar_id', 'name', 'category', 'start_date']
@@ -103,5 +112,19 @@ describe('SaveEventController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(badRequest(new InvalidParamError('end_date')))
+  })
+
+  test('should call SaveEventUseCase once and with correct values', async () => {
+    await sut.execute(input)
+
+    expect(saveEventUseCase.execute).toHaveBeenCalledTimes(1)
+    expect(saveEventUseCase.execute).toHaveBeenCalledWith({
+      calendar_id: 'AnyCalendarId',
+      name: 'AnyEventName',
+      category: 'NORMAL',
+      start_date: new Date(),
+      end_date: new Date()
+
+    })
   })
 })

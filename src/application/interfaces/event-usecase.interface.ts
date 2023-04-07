@@ -9,7 +9,6 @@ export type CategoryOptions = 'NORMAL' | 'WARNING' | 'CRITICAL'
 
 export namespace SaveEvent {
   export type Input = {
-    id: string
     calendar_id: string
     name: string
     category: CategoryOptions

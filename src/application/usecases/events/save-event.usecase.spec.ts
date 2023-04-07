@@ -2,8 +2,9 @@ import { SaveEventeRepositoryInterface } from '@/application/interfaces/event-re
 import { SaveEvent } from '@/application/interfaces/event-usecase.interface'
 import MockDate from 'mockdate'
 import { SaveEventUseCase } from './save-event.usecase'
+import { UUIDGeneratorInterface } from '@/application/interfaces'
 
-export const eventRepository: jest.Mocked<SaveEventeRepositoryInterface> = {
+const eventRepository: jest.Mocked<SaveEventeRepositoryInterface> = {
   save: jest.fn().mockResolvedValue({
     id: 'anyId',
     calendar: {
@@ -18,19 +19,22 @@ export const eventRepository: jest.Mocked<SaveEventeRepositoryInterface> = {
   })
 }
 
+const uuidGenerator: jest.Mocked<UUIDGeneratorInterface> = {
+  uuid: jest.fn().mockReturnValue('anyId')
+}
+
 describe('SaveEventUseCase', () => {
   let input: SaveEvent.Input
   let sut: SaveEventUseCase
 
   beforeAll(() => {
-    sut = new SaveEventUseCase(eventRepository)
+    sut = new SaveEventUseCase(eventRepository, uuidGenerator)
     MockDate.set(new Date('2023-01-01'))
   })
 
   beforeEach(() => {
     jest.clearAllMocks()
     input = {
-      id: 'anyId',
       calendar_id: 'anyCalendarId',
       category: 'NORMAL',
       name: 'anyName',

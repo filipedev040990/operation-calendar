@@ -1,5 +1,5 @@
 import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
-import { GetEventByNameUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
+import { GetEventByNameUseCaseInterface, SaveEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { MissingParamError, InvalidParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict } from '@/shared/helpers/http'
@@ -8,7 +8,8 @@ import { HttpRequest, HttpResponse } from '@/shared/types/http'
 export class SaveEventController implements ControllerInterface {
   constructor (
     private readonly getCalendarByIdUseCase: GetCalendarByIdUseCaseInterface,
-    private readonly getEventCalendarByName: GetEventByNameUseCaseInterface
+    private readonly getEventCalendarByName: GetEventByNameUseCaseInterface,
+    private readonly saveEventUseCase: SaveEventUseCaseInterface
   ) {}
 
   async execute (input: HttpRequest): Promise<HttpResponse> {
@@ -36,6 +37,14 @@ export class SaveEventController implements ControllerInterface {
     if (invalidEndDate) {
       return badRequest(new InvalidParamError('end_date'))
     }
+
+    await this.saveEventUseCase.execute({
+      calendar_id: input.body.calendar_id,
+      name: input.body.name,
+      category: input.body.category,
+      start_date: input.body.start_date,
+      end_date: input.body.end_date ?? input.body.start_date
+    })
     return null
   }
 
