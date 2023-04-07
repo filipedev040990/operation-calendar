@@ -12,25 +12,13 @@ export class SaveEventController implements ControllerInterface {
   ) {}
 
   async execute (input: HttpRequest): Promise<HttpResponse> {
-    const error = await this.validateInput(input)
-    if (error) {
-      return error
-    }
-    return null
-  }
-
-  private async validateInput (input: HttpRequest): Promise<HttpResponse | void> {
-    const requiredFields = ['calendar_id', 'name', 'category', 'start_date']
-
-    for (const field of requiredFields) {
-      if (!input.body[field]) {
-        return badRequest(new MissingParamError(field))
-      }
+    const missingParam = this.requiredParamsValidator(input)
+    if (missingParam) {
+      return badRequest(new MissingParamError(missingParam))
     }
 
-    const validCategories = ['NORMAL', 'WARNING', 'CRITICAL']
-
-    if (!validCategories.includes(input.body.category)) {
+    const invalidCategory = this.categoryValidator(input.body.category)
+    if (invalidCategory) {
       return badRequest(new InvalidParamError('category'))
     }
 
@@ -44,8 +32,32 @@ export class SaveEventController implements ControllerInterface {
       return conflict(new ResourceConflictError('This event already exists'))
     }
 
-    if (input.body?.end_date < input.body.start_date) {
+    const invalidEndDate = this.endDateValidator(input)
+    if (invalidEndDate) {
       return badRequest(new InvalidParamError('end_date'))
+    }
+    return null
+  }
+
+  private requiredParamsValidator (input: HttpRequest): string | void {
+    const requiredFields = ['calendar_id', 'name', 'category', 'start_date']
+    for (const field of requiredFields) {
+      if (!input.body[field]) {
+        return field
+      }
+    }
+  }
+
+  private categoryValidator (category: string): string | void {
+    const validCategories = ['NORMAL', 'WARNING', 'CRITICAL']
+    if (!validCategories.includes(category)) {
+      return category
+    }
+  }
+
+  private endDateValidator (input: HttpRequest): Date | void {
+    if (input.body?.end_date < input.body.start_date) {
+      return input.body.end_date
     }
   }
 }
