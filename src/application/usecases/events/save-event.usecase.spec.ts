@@ -7,11 +7,7 @@ import { UUIDGeneratorInterface } from '@/application/interfaces'
 const eventRepository: jest.Mocked<SaveEventeRepositoryInterface> = {
   save: jest.fn().mockResolvedValue({
     id: 'anyId',
-    calendar: {
-      id: 'anyCalendarId',
-      name: 'AnyCalendar',
-      created_at: new Date('2023-01-01')
-    },
+    calendar_id: 'anyCalendarId',
     category: 'NORMAL',
     name: 'anyName',
     start_date: new Date('2023-01-01'),
@@ -81,11 +77,7 @@ describe('SaveEventUseCase', () => {
 
     expect(response).toEqual({
       id: 'anyId',
-      calendar: {
-        id: 'anyCalendarId',
-        name: 'AnyCalendar',
-        created_at: new Date('2023-01-01')
-      },
+      calendar_id: 'anyCalendarId',
       category: 'NORMAL',
       name: 'anyName',
       start_date: new Date('2023-01-01'),

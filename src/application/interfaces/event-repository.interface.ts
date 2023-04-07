@@ -1,6 +1,5 @@
 import { EventEntity } from '@/domain/entities/event.entity'
 import { CategoryOptions } from './event-usecase.interface'
-import { CalendarEntity } from '@/domain/entities/calendar.entity'
 export interface SaveEventeRepositoryInterface {
   save (input: SaveEventeRepositoryInterface.Input): Promise<SaveEventeRepositoryInterface.Output>
 }
@@ -17,7 +16,7 @@ export namespace SaveEventeRepositoryInterface {
 
   export type Output = {
     id: string
-    calendar: CalendarEntity.Output
+    calendar_id: string
     name: string
     category: string
     start_date: Date

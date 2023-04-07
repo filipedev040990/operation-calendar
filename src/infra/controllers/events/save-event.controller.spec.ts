@@ -19,7 +19,14 @@ const getEventCalendarByName: jest.Mocked<GetEventByNameUseCaseInterface> = {
 }
 
 const saveEventUseCase: jest.Mocked<SaveEventUseCaseInterface> = {
-  execute: jest.fn()
+  execute: jest.fn().mockResolvedValue({
+    id: 'anyId',
+    calendar_id: 'anyCalendarId',
+    category: 'NORMAL',
+    name: 'anyName',
+    start_date: new Date('2023-01-01'),
+    end_date: new Date('2023-01-03')
+  })
 }
 
 describe('SaveEventController', () => {
@@ -125,6 +132,22 @@ describe('SaveEventController', () => {
       start_date: new Date(),
       end_date: new Date()
 
+    })
+  })
+
+  test('should return a new Event', async () => {
+    const response = await sut.execute(input)
+
+    expect(response).toEqual({
+      statusCode: 201,
+      body: {
+        id: 'anyId',
+        calendar_id: 'anyCalendarId',
+        category: 'NORMAL',
+        name: 'anyName',
+        start_date: new Date('2023-01-01'),
+        end_date: new Date('2023-01-03')
+      }
     })
   })
 })

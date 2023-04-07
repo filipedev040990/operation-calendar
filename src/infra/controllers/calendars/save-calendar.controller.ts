@@ -19,7 +19,6 @@ export class SaveCalendarController implements ControllerInterface {
       const newCalendar = await this.saveCalendarUseCase.execute({ name: input.body.name })
       return success(201, newCalendar)
     } catch (error) {
-      console.log(error)
       return serverError(error)
     }
   }

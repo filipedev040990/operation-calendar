@@ -1,4 +1,3 @@
-import { CalendarEntity } from '@/domain/entities/calendar.entity'
 import { EventEntity } from '@/domain/entities/event.entity'
 
 export interface SaveEventUseCaseInterface {
@@ -18,7 +17,7 @@ export namespace SaveEvent {
 
   export type Output = {
     id: string
-    calendar: CalendarEntity.Output
+    calendar_id: string
     name: string
     category: string
     start_date: Date

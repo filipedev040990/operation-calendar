@@ -2,7 +2,7 @@ import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
 import { GetEventByNameUseCaseInterface, SaveEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { MissingParamError, InvalidParamError, ResourceConflictError } from '@/shared/errors'
-import { badRequest, conflict } from '@/shared/helpers/http'
+import { badRequest, conflict, success } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
 export class SaveEventController implements ControllerInterface {
@@ -38,14 +38,14 @@ export class SaveEventController implements ControllerInterface {
       return badRequest(new InvalidParamError('end_date'))
     }
 
-    await this.saveEventUseCase.execute({
+    const newEvent = await this.saveEventUseCase.execute({
       calendar_id: input.body.calendar_id,
       name: input.body.name,
       category: input.body.category,
       start_date: input.body.start_date,
       end_date: input.body.end_date ?? input.body.start_date
     })
-    return null
+    return success(201, newEvent)
   }
 
   private requiredParamsValidator (input: HttpRequest): string | void {
