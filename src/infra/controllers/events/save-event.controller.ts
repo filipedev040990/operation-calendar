@@ -8,7 +8,7 @@ import { HttpRequest, HttpResponse } from '@/shared/types/http'
 export class SaveEventController implements ControllerInterface {
   constructor (
     private readonly getCalendarByIdUseCase: GetCalendarByIdUseCaseInterface,
-    private readonly getEventCalendarByName: GetEventByNameUseCaseInterface,
+    private readonly getEventByName: GetEventByNameUseCaseInterface,
     private readonly saveEventUseCase: SaveEventUseCaseInterface
   ) {}
 
@@ -28,7 +28,7 @@ export class SaveEventController implements ControllerInterface {
       return badRequest(new InvalidParamError('calendar_id'))
     }
 
-    const event = await this.getEventCalendarByName.execute(input.body.name)
+    const event = await this.getEventByName.execute(input.body.name)
     if (event) {
       return conflict(new ResourceConflictError('This event already exists'))
     }

@@ -1,10 +1,8 @@
-import { CategoryOptions } from '@/application/interfaces/event-usecase.interface'
-
 export class EventEntity {
   public id: string
   public calendar_id: string
   public name: string
-  public category: CategoryOptions
+  public category: string
   public start_date: Date
   public end_date: Date
 

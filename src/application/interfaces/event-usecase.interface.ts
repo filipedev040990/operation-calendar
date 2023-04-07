@@ -4,13 +4,11 @@ export interface SaveEventUseCaseInterface {
   execute(input: SaveEvent.Input): Promise<SaveEvent.Output>
 }
 
-export type CategoryOptions = 'NORMAL' | 'WARNING' | 'CRITICAL'
-
 export namespace SaveEvent {
   export type Input = {
     calendar_id: string
     name: string
-    category: CategoryOptions
+    category: string
     start_date: Date
     end_date: Date
   }
