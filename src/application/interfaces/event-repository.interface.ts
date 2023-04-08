@@ -28,7 +28,7 @@ export interface GetEventByNameRepositoryInterface {
 }
 
 export interface GetAllEventsRepositoryInterface {
-  getAll (): Promise<GetAllEventsRepositoryInterface.Output>
+  getAll (): Promise<GetAllEventsRepositoryInterface.Output []>
 }
 
 export namespace GetAllEventsRepositoryInterface {
