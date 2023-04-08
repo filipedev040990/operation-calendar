@@ -3,7 +3,7 @@ import { GetAllEventsUseCaseInterface } from '@/application/interfaces/event-use
 
 export class GetAllEventsUseCase implements GetAllEventsUseCaseInterface {
   constructor (private readonly eventRepository: GetAllEventsRepositoryInterface) {}
-  async execute (): Promise<GetAllEventsUseCaseInterface.Output> {
+  async execute (): Promise<GetAllEventsUseCaseInterface.Output[]> {
     const events = await this.eventRepository.getAll()
     return events ?? null
   }

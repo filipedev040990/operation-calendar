@@ -28,7 +28,7 @@ export interface GetEventByNameUseCaseInterface {
 }
 
 export interface GetAllEventsUseCaseInterface {
-  execute(): Promise<GetAllEventsUseCaseInterface.Output>
+  execute(): Promise<GetAllEventsUseCaseInterface.Output []>
 }
 
 export namespace GetAllEventsUseCaseInterface {
