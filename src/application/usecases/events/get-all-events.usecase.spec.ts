@@ -21,9 +21,13 @@ const eventRepository: jest.Mocked<GetAllEventsRepositoryInterface> = {
 }
 
 describe('GetAllEventsUseCase', () => {
-  test('should call EventsRepository.getAll once', async () => {
-    const sut = new GetAllEventsUseCase(eventRepository)
+  let sut: GetAllEventsUseCase
 
+  beforeAll(() => {
+    sut = new GetAllEventsUseCase(eventRepository)
+  })
+
+  test('should call EventsRepository.getAll once', async () => {
     await sut.execute()
 
     expect(eventRepository.getAll).toHaveBeenCalledTimes(1)
