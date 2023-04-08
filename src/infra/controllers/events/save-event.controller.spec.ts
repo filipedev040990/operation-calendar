@@ -1,7 +1,7 @@
 import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
 import { GetEventByNameUseCaseInterface, SaveEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { InvalidParamError, MissingParamError, ResourceConflictError } from '@/shared/errors'
-import { badRequest, conflict } from '@/shared/helpers/http'
+import { badRequest, conflict, serverError } from '@/shared/helpers/http'
 import { HttpRequest } from '@/shared/types/http'
 import { SaveEventController } from './save-event.controller'
 import MockDate from 'mockdate'
@@ -149,5 +149,15 @@ describe('SaveEventController', () => {
         end_date: new Date('2023-01-03')
       }
     })
+  })
+
+  test('should throw if SaveEventUseCase throws', async () => {
+    saveEventUseCase.execute.mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(serverError(new Error()))
   })
 })
