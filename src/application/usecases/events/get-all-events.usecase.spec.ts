@@ -40,4 +40,12 @@ describe('GetAllEventsUseCase', () => {
 
     expect(response).toEqual(fakeEvents)
   })
+
+  test('should return null if EventRepository.getAll returns null', async () => {
+    eventRepository.getAll.mockResolvedValueOnce(null)
+
+    const response = await sut.execute()
+
+    expect(response).toBeNull()
+  })
 })
