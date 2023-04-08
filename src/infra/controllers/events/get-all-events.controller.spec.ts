@@ -1,12 +1,13 @@
 import { GetAllEventsUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
+import { success } from '@/shared/helpers/http'
 import { HttpResponse } from '@/shared/types/http'
 
 export class GetAllEventsController implements ControllerInterface {
   constructor (private readonly getAllEventsUseCase: GetAllEventsUseCaseInterface) {}
   async execute (): Promise<HttpResponse> {
-    await this.getAllEventsUseCase.execute()
-    return null
+    const events = await this.getAllEventsUseCase.execute()
+    return success(200, events)
   }
 }
 
@@ -33,5 +34,14 @@ describe('GetAllEventsController', () => {
     await sut.execute()
 
     expect(getAllEventsUseCase.execute).toHaveBeenCalledTimes(1)
+  })
+
+  test('should return all events', async () => {
+    const response = await sut.execute()
+
+    expect(response).toEqual({
+      statusCode: 200,
+      body: fakeEvents
+    })
   })
 })
