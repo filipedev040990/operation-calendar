@@ -26,3 +26,18 @@ export namespace SaveEvent {
 export interface GetEventByNameUseCaseInterface {
   execute(name: string): Promise<EventEntity | null>
 }
+
+export interface GetAllEventsUseCaseInterface {
+  execute(): Promise<GetAllEventsUseCaseInterface.Output>
+}
+
+export namespace GetAllEventsUseCaseInterface {
+  export type Output = {
+    event_id: string
+    event_name: string
+    start_date: Date
+    end_date: Date
+    calendar_id: string
+    calendar_name: string
+  }
+}

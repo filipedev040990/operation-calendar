@@ -26,3 +26,18 @@ export namespace SaveEventeRepositoryInterface {
 export interface GetEventByNameRepositoryInterface {
   getByName (name: string): Promise<EventEntity | null>
 }
+
+export interface GetAllEventsRepositoryInterface {
+  getAll (): Promise<GetAllEventsRepositoryInterface.Output>
+}
+
+export namespace GetAllEventsRepositoryInterface {
+  export type Output = {
+    event_id: string
+    event_name: string
+    start_date: Date
+    end_date: Date
+    calendar_id: string
+    calendar_name: string
+  }
+}
