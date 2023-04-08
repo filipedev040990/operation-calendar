@@ -24,9 +24,12 @@ const getAllEventsUseCase: jest.Mocked<GetAllEventsUseCaseInterface> = {
 }
 
 describe('GetAllEventsController', () => {
-  test('should call GetAllEventsUseCase once', async () => {
-    const sut = new GetAllEventsController(getAllEventsUseCase)
+  let sut: GetAllEventsController
+  beforeAll(() => {
+    sut = new GetAllEventsController(getAllEventsUseCase)
+  })
 
+  test('should call GetAllEventsUseCase once', async () => {
     await sut.execute()
 
     expect(getAllEventsUseCase.execute).toHaveBeenCalledTimes(1)
