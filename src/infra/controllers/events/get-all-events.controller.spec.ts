@@ -44,4 +44,15 @@ describe('GetAllEventsController', () => {
       body: fakeEvents
     })
   })
+
+  test('should return null if GetAllEventsUseCase returns null', async () => {
+    getAllEventsUseCase.execute.mockResolvedValueOnce(null)
+
+    const response = await sut.execute()
+
+    expect(response).toEqual({
+      statusCode: 200,
+      body: null
+    })
+  })
 })
