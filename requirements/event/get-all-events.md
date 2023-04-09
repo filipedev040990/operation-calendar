@@ -2,12 +2,12 @@
 
 ## Casos de sucesso
 
-1 - ⛔ Deve retornar **200** com todos os eventos cadastrados
-2 - ⛔ Deve retornar **200** com valor nulo se não houver eventos cadastrados
+1 - ✅ Deve retornar **200** com todos os eventos cadastrados
+2 - ✅ Deve retornar **200** com valor nulo se não houver eventos cadastrados
 
 
 ## Exceções
-1 - ⛔ Deve retornar **500** em caso de erro
+1 - ✅ Deve retornar **500** em caso de erro
 
 ## Objeto Event
 id: string
