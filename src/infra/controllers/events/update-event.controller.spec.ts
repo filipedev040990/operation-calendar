@@ -29,7 +29,7 @@ export class UpdateEventController implements ControllerInterface {
     }
 
     const event = await this.getEventByName.execute(input.body.name)
-    if (event) {
+    if (event && event.id !== input.params.id) {
       return conflict(new ResourceConflictError('This event already exists'))
     }
     return null
@@ -133,5 +133,19 @@ describe('UpdateEventController', () => {
 
     expect(getEventByName.execute).toHaveBeenCalledTimes(1)
     expect(getEventByName.execute).toHaveBeenCalledWith('AnyEventName')
+  })
+
+  test('should return 409 if already event', async () => {
+    getEventByName.execute.mockResolvedValueOnce({
+      id: 'anotherId',
+      calendar_id: 'anyCalendarId',
+      name: 'AnyEventName',
+      category: 'NORMAL',
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-01')
+    })
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(conflict(new ResourceConflictError('This event already exists')))
   })
 })
