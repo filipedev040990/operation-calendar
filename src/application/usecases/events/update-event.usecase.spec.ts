@@ -2,17 +2,15 @@ import { UpdateEventeRepositoryInterface } from '@/application/interfaces/event-
 import { UpdateEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { EventEntity } from '@/domain/entities/event.entity'
 
-const input = {
-  id: 'anyId',
-  calendar_id: 'anyCalendarId',
-  category: 'NORMAL',
-  name: 'anyName',
-  start_date: new Date('2023-01-01'),
-  end_date: new Date('2023-01-03')
-}
-
 const eventRepository: jest.Mocked<UpdateEventeRepositoryInterface> = {
-  update: jest.fn().mockResolvedValue(input)
+  update: jest.fn().mockResolvedValue({
+    id: 'anyId',
+    calendar_id: 'anyCalendarId',
+    category: 'NORMAL',
+    name: 'anyName',
+    start_date: new Date('2023-01-01'),
+    end_date: new Date('2023-01-03')
+  })
 }
 
 export class UpdateEventUseCase implements UpdateEventUseCaseInterface {
@@ -27,16 +25,25 @@ export class UpdateEventUseCase implements UpdateEventUseCaseInterface {
       start_date: new Date(input.start_date),
       end_date: new Date(endDate)
     })
-    await this.eventRepository.update(event)
-    return null
+
+    return await this.eventRepository.update(event)
   }
 }
 
 describe('UpdateEventUseCase', () => {
   let sut: UpdateEventUseCase
+  let input: UpdateEventUseCaseInterface.Input
 
   beforeAll(() => {
     sut = new UpdateEventUseCase(eventRepository)
+    input = {
+      id: 'anyId',
+      calendar_id: 'anyCalendarId',
+      category: 'NORMAL',
+      name: 'anyName',
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-03')
+    }
   })
 
   beforeEach(() => {
@@ -70,6 +77,19 @@ describe('UpdateEventUseCase', () => {
       name: 'anyName',
       start_date: new Date('2023-01-01'),
       end_date: new Date('2023-01-01')
+    })
+  })
+
+  test('should return a updated Event', async () => {
+    const response = await sut.execute(input)
+
+    expect(response).toEqual({
+      id: 'anyId',
+      calendar_id: 'anyCalendarId',
+      category: 'NORMAL',
+      name: 'anyName',
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-03')
     })
   })
 })
