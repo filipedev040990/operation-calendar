@@ -4,7 +4,7 @@ import { InvalidParamError, MissingParamError, ResourceConflictError } from '@/s
 import { badRequest, conflict, serverError } from '@/shared/helpers/http'
 import { HttpRequest } from '@/shared/types/http'
 import MockDate from 'mockdate'
-import { UpdateEventController } from './update-event.usecase'
+import { UpdateEventController } from './update-event.controller'
 
 const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
   execute: jest.fn().mockResolvedValue({

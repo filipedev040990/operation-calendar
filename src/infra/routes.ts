@@ -7,6 +7,7 @@ import { makeUpdateCalendarControllerFactory } from './factories/controllers/cal
 import { makeDeleteCalendarControllerFactory } from './factories/controllers/calendar/delete-calendar-controller.factory'
 import { makeSaveEventControllerFactory } from './factories/controllers/event/save-event-controller.factory'
 import { makeGetAllEventsControllerFactory } from './factories/controllers/event/get-all-events-controller.factory'
+import { makeUpdateEventControllerFactory } from './factories/controllers/event/update-event-controller.factory'
 
 const router = Router()
 
@@ -18,5 +19,6 @@ router.delete('/calendar/:id', expressRouterAdapter(makeDeleteCalendarController
 
 router.post('/event', expressRouterAdapter(makeSaveEventControllerFactory()))
 router.get('/event', expressRouterAdapter(makeGetAllEventsControllerFactory()))
+router.put('/event/:id', expressRouterAdapter(makeUpdateEventControllerFactory()))
 
 export { router }
