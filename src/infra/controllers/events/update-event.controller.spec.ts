@@ -1,5 +1,5 @@
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
-import { MissingParamError } from '@/shared/errors'
+import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { badRequest } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 import MockDate from 'mockdate'
@@ -9,6 +9,11 @@ export class UpdateEventController implements ControllerInterface {
     const missingParam = this.requiredParamsValidator(input)
     if (missingParam) {
       return badRequest(new MissingParamError(missingParam))
+    }
+
+    const invalidCategory = this.categoryValidator(input.body.category)
+    if (invalidCategory) {
+      return badRequest(new InvalidParamError('category'))
     }
     return null
   }
@@ -21,6 +26,13 @@ export class UpdateEventController implements ControllerInterface {
       if (!input[source][field]) {
         return field
       }
+    }
+  }
+
+  private categoryValidator (category: string): string | void {
+    const validCategories = ['NORMAL', 'WARNING', 'CRITICAL']
+    if (!validCategories.includes(category)) {
+      return category
     }
   }
 }
@@ -70,5 +82,13 @@ describe('UpdateEventController', () => {
         input.body[field] = fieldValue
       }
     }
+  })
+
+  test('should return 400 if invalid category is provided', async () => {
+    input.body.category = 'InvalidCategory'
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('category')))
   })
 })
