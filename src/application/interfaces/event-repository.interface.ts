@@ -41,3 +41,7 @@ export namespace GetAllEventsRepositoryInterface {
     calendar_name: string
   }
 }
+
+export interface GetEventByIdRepositoryInterface {
+  getById (id: string): Promise<EventEntity | null>
+}

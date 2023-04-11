@@ -41,3 +41,7 @@ export namespace GetAllEventsUseCaseInterface {
     calendar_name: string
   }
 }
+
+export interface GetEventByIdUseCaseInterface {
+  execute(id: string): Promise<EventEntity | null>
+}
