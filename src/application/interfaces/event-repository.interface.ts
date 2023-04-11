@@ -45,3 +45,27 @@ export namespace GetAllEventsRepositoryInterface {
 export interface GetEventByIdRepositoryInterface {
   getById (id: string): Promise<EventEntity | null>
 }
+
+export interface UpdateEventeRepositoryInterface {
+  update (input: UpdateEventeRepositoryInterface.Input): Promise<UpdateEventeRepositoryInterface.Output>
+}
+
+export namespace UpdateEventeRepositoryInterface {
+  export type Input = {
+    id: string
+    calendar_id: string
+    name: string
+    category: string
+    start_date: Date
+    end_date: Date
+  }
+
+  export type Output = {
+    id: string
+    calendar_id: string
+    name: string
+    category: string
+    start_date: Date
+    end_date: Date
+  }
+}

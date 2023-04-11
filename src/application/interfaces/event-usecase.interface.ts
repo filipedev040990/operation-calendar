@@ -45,3 +45,27 @@ export namespace GetAllEventsUseCaseInterface {
 export interface GetEventByIdUseCaseInterface {
   execute(id: string): Promise<EventEntity | null>
 }
+
+export interface UpdateEventUseCaseInterface {
+  execute(input: UpdateEventUseCaseInterface.Input): Promise<UpdateEventUseCaseInterface.Output>
+}
+
+export namespace UpdateEventUseCaseInterface {
+  export type Input = {
+    id: string
+    calendar_id: string
+    name: string
+    category: string
+    start_date: Date
+    end_date: Date
+  }
+
+  export type Output = {
+    id: string
+    calendar_id: string
+    name: string
+    category: string
+    start_date: Date
+    end_date: Date
+  }
+}
