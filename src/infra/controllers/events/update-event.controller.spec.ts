@@ -32,6 +32,11 @@ export class UpdateEventController implements ControllerInterface {
     if (event && event.id !== input.params.id) {
       return conflict(new ResourceConflictError('This event already exists'))
     }
+
+    const invalidEndDate = this.endDateValidator(input)
+    if (invalidEndDate) {
+      return badRequest(new InvalidParamError('end_date'))
+    }
     return null
   }
 
@@ -50,6 +55,12 @@ export class UpdateEventController implements ControllerInterface {
     const validCategories = ['NORMAL', 'WARNING', 'CRITICAL']
     if (!validCategories.includes(category)) {
       return category
+    }
+  }
+
+  private endDateValidator (input: HttpRequest): Date | void {
+    if (input.body?.end_date < input.body.start_date) {
+      return input.body.end_date
     }
   }
 }
@@ -147,5 +158,15 @@ describe('UpdateEventController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(conflict(new ResourceConflictError('This event already exists')))
+  })
+
+  test('should return 400 if end date is provided and it is less than start date', async () => {
+    const now = new Date()
+    const yesterday = now.setDate(now.getDate() - 1)
+    input.body.end_date = yesterday
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('end_date')))
   })
 })
