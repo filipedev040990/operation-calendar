@@ -26,4 +26,12 @@ describe('GetEventByIdUseCase', () => {
     expect(eventRepository.getById).toHaveBeenCalledTimes(1)
     expect(eventRepository.getById).toHaveBeenCalledWith('anyId')
   })
+
+  test('should return null if EventRepository.getById returns null', async () => {
+    eventRepository.getById.mockResolvedValueOnce(null)
+
+    const response = await sut.execute('anyId')
+
+    expect(response).toBeNull()
+  })
 })
