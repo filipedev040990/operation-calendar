@@ -5,13 +5,20 @@ import { EventEntity } from '@/domain/entities/event.entity'
 export class GetEventByIdUseCase implements GetEventByIdUseCaseInterface {
   constructor (private readonly eventRepository: GetEventByIdRepositoryInterface) {}
   async execute (id: string): Promise<EventEntity | null> {
-    await this.eventRepository.getById(id)
-    return null
+    const event = await this.eventRepository.getById(id)
+    return event ?? null
   }
 }
 
 const eventRepository: jest.Mocked<GetEventByIdRepositoryInterface> = {
-  getById: jest.fn()
+  getById: jest.fn().mockResolvedValue({
+    id: 'anyId',
+    calendar_id: 'anyCalendarId',
+    category: 'NORMAL',
+    name: 'anyName',
+    start_date: new Date('2023-01-01'),
+    end_date: new Date('2023-01-03')
+  })
 }
 
 describe('GetEventByIdUseCase', () => {
@@ -33,5 +40,18 @@ describe('GetEventByIdUseCase', () => {
     const response = await sut.execute('anyId')
 
     expect(response).toBeNull()
+  })
+
+  test('should return an Event', async () => {
+    const response = await sut.execute('anyId')
+
+    expect(response).toEqual({
+      id: 'anyId',
+      calendar_id: 'anyCalendarId',
+      category: 'NORMAL',
+      name: 'anyName',
+      start_date: new Date('2023-01-01'),
+      end_date: new Date('2023-01-03')
+    })
   })
 })
