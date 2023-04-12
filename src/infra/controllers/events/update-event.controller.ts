@@ -1,5 +1,5 @@
 import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
-import { GetEventByNameUseCaseInterface, UpdateEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
+import { GetEventByIdUseCaseInterface, GetEventByNameUseCaseInterface, UpdateEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { MissingParamError, InvalidParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict, success, serverError } from '@/shared/helpers/http'
@@ -9,6 +9,7 @@ export class UpdateEventController implements ControllerInterface {
   constructor (
     private readonly getCalendarByIdUseCase: GetCalendarByIdUseCaseInterface,
     private readonly getEventByName: GetEventByNameUseCaseInterface,
+    private readonly getEventByIdUseCase: GetEventByIdUseCaseInterface,
     private readonly updateEventUseCase: UpdateEventUseCaseInterface
   ) {}
 
@@ -29,9 +30,14 @@ export class UpdateEventController implements ControllerInterface {
         return badRequest(new InvalidParamError('calendar_id'))
       }
 
-      const event = await this.getEventByName.execute(input.body.name)
+      let event = await this.getEventByName.execute(input.body.name)
       if (event && event.id !== input.params.id) {
         return conflict(new ResourceConflictError('This event already exists'))
+      }
+
+      event = await this.getEventByIdUseCase.execute(input.params.id)
+      if (!event) {
+        return badRequest(new InvalidParamError('id'))
       }
 
       const invalidEndDate = this.endDateValidator(input)

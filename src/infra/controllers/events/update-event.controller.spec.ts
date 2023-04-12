@@ -1,5 +1,5 @@
 import { GetCalendarByIdUseCaseInterface } from '@/application/interfaces'
-import { GetEventByNameUseCaseInterface, UpdateEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
+import { GetEventByIdUseCaseInterface, GetEventByNameUseCaseInterface, UpdateEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { InvalidParamError, MissingParamError, ResourceConflictError } from '@/shared/errors'
 import { badRequest, conflict, serverError } from '@/shared/helpers/http'
 import { HttpRequest } from '@/shared/types/http'
@@ -16,6 +16,17 @@ const getCalendarByIdUseCase: jest.Mocked<GetCalendarByIdUseCaseInterface> = {
 
 const getEventByName: jest.Mocked<GetEventByNameUseCaseInterface> = {
   execute: jest.fn().mockResolvedValue(null)
+}
+
+const getEventById: jest.Mocked<GetEventByIdUseCaseInterface> = {
+  execute: jest.fn().mockResolvedValue({
+    id: 'anyId',
+    calendar_id: 'anyCalendarId',
+    category: 'NORMAL',
+    name: 'anyName',
+    start_date: new Date('2023-01-01'),
+    end_date: new Date('2023-01-03')
+  })
 }
 
 const updateEventUseCase: jest.Mocked<UpdateEventUseCaseInterface> = {
@@ -35,7 +46,7 @@ describe('UpdateEventController', () => {
 
   beforeAll(() => {
     MockDate.set(new Date())
-    sut = new UpdateEventController(getCalendarByIdUseCase, getEventByName, updateEventUseCase)
+    sut = new UpdateEventController(getCalendarByIdUseCase, getEventByName, getEventById, updateEventUseCase)
   })
 
   beforeEach(() => {
@@ -96,6 +107,21 @@ describe('UpdateEventController', () => {
 
     expect(getEventByName.execute).toHaveBeenCalledTimes(1)
     expect(getEventByName.execute).toHaveBeenCalledWith('AnyEventName')
+  })
+
+  test('should call getEventById once and with correct id', async () => {
+    await sut.execute(input)
+
+    expect(getEventById.execute).toHaveBeenCalledTimes(1)
+    expect(getEventById.execute).toHaveBeenCalledWith('anyId')
+  })
+
+  test('should return 400 if event id is invalid', async () => {
+    getEventById.execute.mockResolvedValueOnce(null)
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('id')))
   })
 
   test('should return 409 if already event', async () => {
