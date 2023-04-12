@@ -167,7 +167,7 @@ describe('UpdateEventController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual({
-      statusCode: 201,
+      statusCode: 200,
       body: {
         id: 'anyId',
         calendar_id: 'anyCalendarId',

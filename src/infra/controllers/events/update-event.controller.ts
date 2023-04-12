@@ -53,7 +53,7 @@ export class UpdateEventController implements ControllerInterface {
         start_date: input.body.start_date,
         end_date: input.body.end_date ?? input.body.start_date
       })
-      return success(201, newEvent)
+      return success(200, newEvent)
     } catch (error) {
       return serverError(error)
     }
