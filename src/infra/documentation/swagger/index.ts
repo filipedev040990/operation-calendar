@@ -1,11 +1,11 @@
-import { calendarPath } from './paths/calendar.path'
-import { calendarSchema } from './schemas/calendar.schema'
+import { calendarPath, getCalendarByNamePath } from './paths'
+import { calendarSchema, addCalendarInputSchema, addCalendarOutputSchema, errorSchema } from './schemas'
 
 export default {
   openapi: '3.0.0',
   info: {
-    title: 'API calendario operacional',
-    description: 'Documentação da API de calendario operacional',
+    title: 'API calendário operacional.',
+    description: 'Documentação da API de calendario operacional.',
     version: '1.0.0'
   },
   servers: [{
@@ -15,10 +15,14 @@ export default {
     name: 'Calendar'
   }],
   paths: {
-    '/calendar': calendarPath
+    '/calendar': calendarPath,
+    '/calendar/{name}': getCalendarByNamePath
   },
   schemas: {
-    calendarSchema
+    calendarSchema,
+    addCalendarInputSchema,
+    addCalendarOutputSchema,
+    errorSchema
   }
 
 }
