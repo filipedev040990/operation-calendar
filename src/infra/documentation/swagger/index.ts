@@ -1,12 +1,24 @@
+import { calendarPath } from './paths/calendar.path'
+import { calendarSchema } from './schemas/calendar.schema'
+
 export default {
-  openApi: '3.0.0',
+  openapi: '3.0.0',
   info: {
-    description: 'API calendario operacional',
-    version: '1.0.0',
-    contact: {
-      name: 'Filipe Siqueira',
-      email: 'filipedev040990@gmail.com'
-    }
+    title: 'API calendario operacional',
+    description: 'Documentação da API de calendario operacional',
+    version: '1.0.0'
+  },
+  servers: [{
+    url: '/api'
+  }],
+  tags: [{
+    name: 'Calendar'
+  }],
+  paths: {
+    '/calendar': calendarPath
+  },
+  schemas: {
+    calendarSchema
   }
 
 }

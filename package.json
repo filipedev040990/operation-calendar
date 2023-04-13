@@ -8,7 +8,7 @@
     "build": "rimraf dist && tsc -p tsconfig-build.json",
     "restart": "npm run build && docker compose down && docker compose up",
     "up": "npm run build && docker compose up",
-    "dev": "ts-node-dev src/infra/server.ts",
+    "dev": "npm run build && ts-node-dev src/infra/server.ts",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
