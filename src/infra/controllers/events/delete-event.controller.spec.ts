@@ -1,5 +1,5 @@
 import { MissingParamError } from '@/shared/errors'
-import { badRequest } from '@/shared/helpers/http'
+import { badRequest, noContent } from '@/shared/helpers/http'
 import { DeleteEventController } from './delete-event.controller'
 import { HttpRequest } from '@/shared/types/http'
 import { DeleteEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
@@ -36,5 +36,10 @@ describe('DeleteEventController', () => {
 
     expect(deleteEventUseCase.execute).toHaveBeenCalledTimes(1)
     expect(deleteEventUseCase.execute).toHaveBeenCalledWith('anyEventId')
+  })
+  test('should return 204 on sucess', async () => {
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(noContent())
   })
 })
