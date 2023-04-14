@@ -1,5 +1,5 @@
 import { MissingParamError } from '@/shared/errors'
-import { badRequest, noContent } from '@/shared/helpers/http'
+import { badRequest, noContent, serverError } from '@/shared/helpers/http'
 import { DeleteEventController } from './delete-event.controller'
 import { HttpRequest } from '@/shared/types/http'
 import { DeleteEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
@@ -41,5 +41,15 @@ describe('DeleteEventController', () => {
     const response = await sut.execute(input)
 
     expect(response).toEqual(noContent())
+  })
+
+  test('should throw if DeleteEventUseCase throws', async () => {
+    deleteEventUseCase.execute.mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(serverError(new Error()))
   })
 })

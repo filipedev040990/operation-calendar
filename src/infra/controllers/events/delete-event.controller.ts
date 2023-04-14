@@ -1,7 +1,7 @@
 import { DeleteEventUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
 import { MissingParamError } from '@/shared/errors'
-import { badRequest, noContent } from '@/shared/helpers/http'
+import { badRequest, noContent, serverError } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
 export class DeleteEventController implements ControllerInterface {
@@ -10,7 +10,12 @@ export class DeleteEventController implements ControllerInterface {
     if (!input?.params?.id) {
       return badRequest(new MissingParamError('id'))
     }
-    await this.deleteEventUseCase.execute(input.params.id)
-    return noContent()
+
+    try {
+      await this.deleteEventUseCase.execute(input.params.id)
+      return noContent()
+    } catch (error) {
+      return serverError(error)
+    }
   }
 }
