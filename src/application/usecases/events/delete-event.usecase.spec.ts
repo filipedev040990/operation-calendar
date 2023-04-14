@@ -25,4 +25,14 @@ describe('DeleteEventUseCase', () => {
     expect(eventRepository.delete).toHaveBeenCalledTimes(1)
     expect(eventRepository.delete).toHaveBeenCalledWith('anyEventId')
   })
+
+  test('should rethrow if EventRepository.delete throws', async () => {
+    eventRepository.delete.mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const promise = sut.execute('anyEventId')
+
+    await expect(promise).rejects.toThrowError()
+  })
 })
