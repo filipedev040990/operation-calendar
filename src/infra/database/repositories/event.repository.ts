@@ -1,8 +1,8 @@
-import { GetAllEventsRepositoryInterface, GetEventByIdRepositoryInterface, GetEventByNameRepositoryInterface, SaveEventeRepositoryInterface, UpdateEventeRepositoryInterface } from '@/application/interfaces/event-repository.interface'
+import { DeleteEventRepositoryInterface, GetAllEventsRepositoryInterface, GetEventByIdRepositoryInterface, GetEventByNameRepositoryInterface, SaveEventeRepositoryInterface, UpdateEventeRepositoryInterface } from '@/application/interfaces/event-repository.interface'
 import { prismaClient } from './prisma-client'
 import { EventEntity } from '@/domain/entities/event.entity'
 
-export class EventRepository implements SaveEventeRepositoryInterface, GetEventByNameRepositoryInterface, GetAllEventsRepositoryInterface, UpdateEventeRepositoryInterface, GetEventByIdRepositoryInterface {
+export class EventRepository implements SaveEventeRepositoryInterface, GetEventByNameRepositoryInterface, GetAllEventsRepositoryInterface, UpdateEventeRepositoryInterface, GetEventByIdRepositoryInterface, DeleteEventRepositoryInterface {
   async save (input: SaveEventeRepositoryInterface.Input): Promise<SaveEventeRepositoryInterface.Output> {
     return await prismaClient.event.create({
       data: {
@@ -66,5 +66,9 @@ export class EventRepository implements SaveEventeRepositoryInterface, GetEventB
 
   async getById (id: string): Promise<EventEntity | null> {
     return await prismaClient.event.findFirst({ where: { id } })
+  }
+
+  async delete (id: string): Promise<void> {
+    await prismaClient.event.delete({ where: { id } })
   }
 }
