@@ -42,7 +42,7 @@ export const getCalendarByNamePath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/errorSchema'
+              $ref: '#/schemas/serverErrorSchema'
             }
           }
         }

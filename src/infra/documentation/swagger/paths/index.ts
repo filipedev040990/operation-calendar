@@ -1,3 +1,3 @@
-export * from './calendar.path'
-export * from './event.path'
-export * from './getCalendarByName.path'
+export * from './calendar/calendar.path'
+export * from './calendar/getCalendarByName.path'
+export * from './event/event.path'

@@ -1,5 +1,5 @@
 import { calendarPath, eventPath, getCalendarByNamePath } from './paths'
-import { calendarSchema, addCalendarInputSchema, addCalendarOutputSchema, errorSchema, serverErrorSchema, addEventInputSchema, addEventOutputSchema } from './schemas'
+import { calendarSchema, addCalendarInputSchema, addCalendarOutputSchema, serverErrorSchema, addEventInputSchema, addEventOutputSchema, eventSchema } from './schemas'
 
 export default {
   openapi: '3.0.0',
@@ -25,10 +25,9 @@ export default {
     calendarSchema,
     addCalendarInputSchema,
     addCalendarOutputSchema,
-    errorSchema,
     serverErrorSchema,
     addEventInputSchema,
-    addEventOutputSchema
+    addEventOutputSchema,
+    eventSchema
   }
-
 }
