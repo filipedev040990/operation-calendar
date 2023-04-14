@@ -1,5 +1,5 @@
-import { calendarPath, getCalendarByNamePath } from './paths'
-import { calendarSchema, addCalendarInputSchema, addCalendarOutputSchema, errorSchema } from './schemas'
+import { calendarPath, eventPath, getCalendarByNamePath } from './paths'
+import { calendarSchema, addCalendarInputSchema, addCalendarOutputSchema, errorSchema, serverErrorSchema, addEventInputSchema, addEventOutputSchema } from './schemas'
 
 export default {
   openapi: '3.0.0',
@@ -13,16 +13,22 @@ export default {
   }],
   tags: [{
     name: 'Calendar'
+  }, {
+    name: 'Event'
   }],
   paths: {
     '/calendar': calendarPath,
-    '/calendar/{name}': getCalendarByNamePath
+    '/calendar/{name}': getCalendarByNamePath,
+    '/event': eventPath
   },
   schemas: {
     calendarSchema,
     addCalendarInputSchema,
     addCalendarOutputSchema,
-    errorSchema
+    errorSchema,
+    serverErrorSchema,
+    addEventInputSchema,
+    addEventOutputSchema
   }
 
 }

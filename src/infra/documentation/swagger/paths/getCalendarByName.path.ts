@@ -22,11 +22,17 @@ export const getCalendarByNamePath = {
         }
       },
       400: {
-        description: 'Nome inválido.',
+        description: 'Requisição inválida',
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/errorSchema'
+              type: 'object',
+              properties: {
+                error: {
+                  type: 'string',
+                  example: 'Missing param: name'
+                }
+              }
             }
           }
         }

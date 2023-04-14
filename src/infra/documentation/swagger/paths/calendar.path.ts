@@ -27,7 +27,13 @@ export const calendarPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/errorSchema'
+              type: 'object',
+              properties: {
+                error: {
+                  type: 'string',
+                  example: 'Missing param: name'
+                }
+              }
             }
           }
         }
@@ -37,7 +43,7 @@ export const calendarPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/errorSchema'
+              $ref: '#/schemas/serverErrorSchema'
             }
           }
         }
@@ -54,6 +60,16 @@ export const calendarPath = {
           'application/json': {
             schema: {
               $ref: '#/schemas/calendarSchema'
+            }
+          }
+        }
+      },
+      500: {
+        description: 'Erro interno do servidor.',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/schemas/serverErrorSchema'
             }
           }
         }
@@ -92,11 +108,17 @@ export const calendarPath = {
         }
       },
       400: {
-        description: 'Requisição inválida.',
+        description: 'Requisição inválida',
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/errorSchema'
+              type: 'object',
+              properties: {
+                error: {
+                  type: 'string',
+                  example: 'Missing param: name'
+                }
+              }
             }
           }
         }
@@ -106,7 +128,7 @@ export const calendarPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/errorSchema'
+              $ref: '#/schemas/serverErrorSchema'
             }
           }
         }
@@ -129,11 +151,17 @@ export const calendarPath = {
         description: 'Sucesso.'
       },
       400: {
-        description: 'Requisição inválida.',
+        description: 'Requisição inválida',
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/errorSchema'
+              type: 'object',
+              properties: {
+                error: {
+                  type: 'string',
+                  example: 'Invalid param: id'
+                }
+              }
             }
           }
         }
@@ -143,7 +171,7 @@ export const calendarPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/errorSchema'
+              $ref: '#/schemas/serverErrorSchema'
             }
           }
         }
