@@ -69,3 +69,7 @@ export namespace UpdateEventUseCaseInterface {
     end_date: Date
   }
 }
+
+export interface DeleteEventUseCaseInterface {
+  execute(id: string): Promise<void>
+}

@@ -69,3 +69,7 @@ export namespace UpdateEventeRepositoryInterface {
     end_date: Date
   }
 }
+
+export interface DeleteEventRepositoryInterface {
+  delete(id: string): Promise<void>
+}
