@@ -1,18 +1,25 @@
 import { GetEventByIdUseCaseInterface } from '@/application/interfaces/event-usecase.interface'
 import { ControllerInterface } from '@/infra/interfaces/controller.interface'
-import { noContent } from '@/shared/helpers/http'
+import { noContent, success } from '@/shared/helpers/http'
 import { HttpRequest, HttpResponse } from '@/shared/types/http'
 
 export class GetEventByIdController implements ControllerInterface {
   constructor (private readonly getEventByIdUseCase: GetEventByIdUseCaseInterface) {}
   async execute (input: HttpRequest): Promise<HttpResponse> {
-    await this.getEventByIdUseCase.execute(input.params?.id)
-    return noContent()
+    const event = await this.getEventByIdUseCase.execute(input.params?.id)
+    return event ? success(200, event) : noContent()
   }
 }
 
 const getEventByIdUseCase: jest.Mocked<GetEventByIdUseCaseInterface> = {
-  execute: jest.fn()
+  execute: jest.fn().mockResolvedValue({
+    id: 'anyId',
+    calendar_id: 'anyCalendarId',
+    category: 'NORMAL',
+    name: 'anyName',
+    start_date: new Date('2023-01-01'),
+    end_date: new Date('2023-01-03')
+  })
 }
 
 describe('GetEventByIdController', () => {
@@ -35,8 +42,26 @@ describe('GetEventByIdController', () => {
   })
 
   test('should return null if GetEventByIdUseCase returns null', async () => {
+    getEventByIdUseCase.execute.mockResolvedValueOnce(null)
+
     const response = await sut.execute(input)
 
     expect(response).toEqual(noContent())
+  })
+
+  test('should return a Event', async () => {
+    const response = await sut.execute(input)
+
+    expect(response).toEqual({
+      statusCode: 200,
+      body: {
+        id: 'anyId',
+        calendar_id: 'anyCalendarId',
+        category: 'NORMAL',
+        name: 'anyName',
+        start_date: new Date('2023-01-01'),
+        end_date: new Date('2023-01-03')
+      }
+    })
   })
 })
