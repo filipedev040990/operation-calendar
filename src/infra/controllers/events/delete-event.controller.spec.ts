@@ -1,4 +1,4 @@
-import { MissingParamError } from '@/shared/errors'
+import { InvalidParamError, MissingParamError } from '@/shared/errors'
 import { badRequest, noContent, serverError } from '@/shared/helpers/http'
 import { DeleteEventController } from './delete-event.controller'
 import { HttpRequest } from '@/shared/types/http'
@@ -48,6 +48,13 @@ describe('DeleteEventController', () => {
 
     expect(getEventByIdUseCase.execute).toHaveBeenCalledTimes(1)
     expect(getEventByIdUseCase.execute).toHaveBeenCalledWith('anyEventId')
+  })
+  test('should return 400 if GetEventByIdUseCase returns null', async () => {
+    getEventByIdUseCase.execute.mockResolvedValueOnce(null)
+
+    const response = await sut.execute(input)
+
+    expect(response).toEqual(badRequest(new InvalidParamError('id')))
   })
 
   test('should call DeleteEventUseCase once and with correct id', async () => {
