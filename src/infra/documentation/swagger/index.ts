@@ -1,4 +1,4 @@
-import { calendarPath, eventPath, getCalendarByNamePath } from './paths'
+import { GetEventById, calendarPath, eventPath, getCalendarByNamePath } from './paths'
 import { calendarSchema, addCalendarInputSchema, addCalendarOutputSchema, serverErrorSchema, addEventInputSchema, addEventOutputSchema, eventSchema } from './schemas'
 
 export default {
@@ -19,7 +19,8 @@ export default {
   paths: {
     '/calendar': calendarPath,
     '/calendar/{name}': getCalendarByNamePath,
-    '/event': eventPath
+    '/event': eventPath,
+    '/event/{id}': GetEventById
   },
   schemas: {
     calendarSchema,
